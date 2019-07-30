@@ -15,21 +15,24 @@
 
 #include "util.h"
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
 struct color255
 {
     // these members should be between 0 and 255 at all time
     // I ignore checking here for simplicity.
-    int r,g,b;    
+    unsigned char r,g,b;    
 };
 
 // anonymous namespace for global variables in single compilation unit
 namespace
 {
-    const int image_width = 1024;
-    const int image_height = 768;
+    const int image_width = 1920;
+    const int image_height = 1080;
     const float width_to_height_ratio = (float)image_width / (float)image_height;
 
-    const int msaa_sample_count = 100;
+    const int msaa_sample_count = 200;
 
     const std::shared_ptr<hitable> world = random_scene();
 
@@ -41,7 +44,7 @@ namespace
 
     const camera cam(lookfrom, lookat, up, 20.0f, width_to_height_ratio, aperture, distance_to_focus);
 
-    color255 image[image_width][image_height];
+    unsigned char image[3 * image_width * image_height];
 }
 
 vec3 get_color(const ray& _ray, std::shared_ptr<hitable> _world, int depth)
@@ -86,9 +89,9 @@ void thread_entry(int i, int j)
     int b01 = int(255.99 * accumulated_col[2]);
 
     //std::cout << r01 << " " << g01 << " " << b01 << "\n";
-    image[i][j].r = r01;
-    image[i][j].g = g01;
-    image[i][j].b = b01;
+    image[j * 3 * image_width + i * 3 + 0] = r01;
+    image[j * 3 * image_width + i * 3 + 1] = g01;
+    image[j * 3 * image_width + i * 3 + 2] = b01;
 }
 
 int main()
@@ -111,14 +114,20 @@ int main()
             }
         }
     }
-
-    for(int j = image_height - 1; j >= 0; j--)
+    
+    stbi_flip_vertically_on_write(true);
+    if(stbi_write_png("output.png", image_width, image_height, 3, image, 0) == 0)
     {
-        for(int i = 0; i < image_width; i++)
-        {
-            std::cout << image[i][j].r << " " 
-                << image[i][j].g << " " 
-                << image[i][j].b << "\n";
-        }
+        std::cerr << "Error when saving image\n";
     }
+
+    // for(int j = image_height - 1; j >= 0; j--)
+    // {
+    //     for(int i = 0; i < image_width; i++)
+    //     {
+    //         std::cout << image[i][j].r << " " 
+    //             << image[i][j].g << " " 
+    //             << image[i][j].b << "\n";
+    //     }
+    // }
 }
