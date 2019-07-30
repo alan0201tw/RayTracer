@@ -1,2 +1,9 @@
+# folders
 .vscode/*
 bin/*
+
+# executables
+main
+
+# images
+*.ppm

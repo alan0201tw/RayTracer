@@ -4,7 +4,7 @@
 #include <vector>
 
 // add parallel
-#include <thread>
+#include "ThreadPool.h"
 
 #include "vec3.h"
 #include "ray.h"
@@ -67,31 +67,28 @@ vec3 get_color(const ray& _ray, std::shared_ptr<hitable> _world, int depth)
     }
 }
 
-void thread_entry(int j)
+void thread_entry(int i, int j)
 {
-    for(int i = 0; i < image_width; i++)
+    vec3 accumulated_col(0, 0, 0);
+
+    for(int s = 0; s < msaa_sample_count; s++)
     {
-        vec3 accumulated_col(0, 0, 0);
+        float u = float(i + drand48()) / float(image_width);
+        float v = float(j + drand48()) / float(image_height);
 
-        for(int s = 0; s < msaa_sample_count; s++)
-        {
-            float u = float(i + drand48()) / float(image_width);
-            float v = float(j + drand48()) / float(image_height);
-
-            ray r = cam.get_ray(u, v);
-            accumulated_col += get_color(r, world, 0);
-        }
-        accumulated_col /= msaa_sample_count;
-        accumulated_col = vec3(sqrt(accumulated_col[0]), sqrt(accumulated_col[1]), sqrt(accumulated_col[2]));
-        int r01 = int(255.99 * accumulated_col[0]);
-        int g01 = int(255.99 * accumulated_col[1]);
-        int b01 = int(255.99 * accumulated_col[2]);
-
-        //std::cout << r01 << " " << g01 << " " << b01 << "\n";
-        image[i][j].r = r01;
-        image[i][j].g = g01;
-        image[i][j].b = b01;
+        ray r = cam.get_ray(u, v);
+        accumulated_col += get_color(r, world, 0);
     }
+    accumulated_col /= msaa_sample_count;
+    accumulated_col = vec3(sqrt(accumulated_col[0]), sqrt(accumulated_col[1]), sqrt(accumulated_col[2]));
+    int r01 = int(255.99 * accumulated_col[0]);
+    int g01 = int(255.99 * accumulated_col[1]);
+    int b01 = int(255.99 * accumulated_col[2]);
+
+    //std::cout << r01 << " " << g01 << " " << b01 << "\n";
+    image[i][j].r = r01;
+    image[i][j].g = g01;
+    image[i][j].b = b01;
 }
 
 int main()
@@ -100,18 +97,19 @@ int main()
 
     std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
     
-    std::vector<std::thread> threads;
-    threads.reserve(image_width);
-
-    // Into the screen is negative z axis
-    for(int j = image_height - 1; j >= 0; j--)
     {
-        threads.push_back(std::thread(thread_entry, j));
-    }
+        // since the destructor of ThreadPool joins all thread
+        // I use a simple scope to wait for all works to be done
+        ThreadPool pool(10000);
 
-    for(size_t tid = 0; tid < threads.size(); tid++)
-    {
-        threads[tid].join();
+        // Into the screen is negative z axis
+        for(int j = image_height - 1; j >= 0; j--)
+        {
+            for(int i = 0; i < image_width; i++)
+            {
+                pool.enqueue(thread_entry, i, j);
+            }
+        }
     }
 
     for(int j = image_height - 1; j >= 0; j--)
