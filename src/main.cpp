@@ -3,6 +3,9 @@
 #include <memory>
 #include <vector>
 
+// add parallel
+#include <thread>
+
 #include "vec3.h"
 #include "ray.h"
 #include "hitable_list.h"
@@ -12,13 +15,33 @@
 
 #include "util.h"
 
+struct color255
+{
+    // these members should be between 0 and 255 at all time
+    // I ignore checking here for simplicity.
+    int r,g,b;    
+};
+
+// anonymous namespace for global variables in single compilation unit
 namespace
 {
-    const int image_width = 1366;
+    const int image_width = 1024;
     const int image_height = 768;
     const float width_to_height_ratio = (float)image_width / (float)image_height;
 
-    const int msaa_sample_count = 10;
+    const int msaa_sample_count = 100;
+
+    const std::shared_ptr<hitable> world = random_scene();
+
+    const vec3 lookfrom(13.0f, 2.0f, 3.0f);
+    const vec3 lookat(0.0f, 0.0f, -1.0f);
+    const vec3 up(0.0f, 1.0f, 0.0f);
+    const float distance_to_focus = 10.0f;
+    const float aperture = 0.1f;
+
+    const camera cam(lookfrom, lookat, up, 20.0f, width_to_height_ratio, aperture, distance_to_focus);
+
+    color255 image[image_width][image_height];
 }
 
 vec3 get_color(const ray& _ray, std::shared_ptr<hitable> _world, int depth)
@@ -44,43 +67,60 @@ vec3 get_color(const ray& _ray, std::shared_ptr<hitable> _world, int depth)
     }
 }
 
+void thread_entry(int j)
+{
+    for(int i = 0; i < image_width; i++)
+    {
+        vec3 accumulated_col(0, 0, 0);
+
+        for(int s = 0; s < msaa_sample_count; s++)
+        {
+            float u = float(i + drand48()) / float(image_width);
+            float v = float(j + drand48()) / float(image_height);
+
+            ray r = cam.get_ray(u, v);
+            accumulated_col += get_color(r, world, 0);
+        }
+        accumulated_col /= msaa_sample_count;
+        accumulated_col = vec3(sqrt(accumulated_col[0]), sqrt(accumulated_col[1]), sqrt(accumulated_col[2]));
+        int r01 = int(255.99 * accumulated_col[0]);
+        int g01 = int(255.99 * accumulated_col[1]);
+        int b01 = int(255.99 * accumulated_col[2]);
+
+        //std::cout << r01 << " " << g01 << " " << b01 << "\n";
+        image[i][j].r = r01;
+        image[i][j].g = g01;
+        image[i][j].b = b01;
+    }
+}
+
 int main()
 {
+    srand48(int(time(0)));
+
     std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
     
-    std::shared_ptr<hitable> world = random_scene();
-
-    vec3 lookfrom(13.0f, 2.0f, 3.0f);
-    vec3 lookat(0.0f, 0.0f, -1.0f);
-    vec3 up(0.0f, 1.0f, 0.0f);
-    float distance_to_focus = 10.0f;
-    float aperture = 0.1f;
-
-    camera cam(lookfrom, lookat, up, 20.0f, width_to_height_ratio, aperture, distance_to_focus);
+    std::vector<std::thread> threads;
+    threads.reserve(image_width);
 
     // Into the screen is negative z axis
     for(int j = image_height - 1; j >= 0; j--)
     {
-        for(int i = 0; i < image_width; i++)
-        {
-            vec3 accumulated_col(0, 0, 0);
-
-            for(int s = 0; s < msaa_sample_count; s++)
-            {
-                float u = float(i + drand48()) / float(image_width);
-                float v = float(j + drand48()) / float(image_height);
-
-                ray r = cam.get_ray(u, v);
-                accumulated_col += get_color(r, world, 0);
-            }
-            accumulated_col /= msaa_sample_count;
-            accumulated_col = vec3(sqrt(accumulated_col[0]), sqrt(accumulated_col[1]), sqrt(accumulated_col[2]));
-            int r01 = int(255.99 * accumulated_col[0]);
-            int g01 = int(255.99 * accumulated_col[1]);
-            int b01 = int(255.99 * accumulated_col[2]);
-
-            std::cout << r01 << " " << g01 << " " << b01 << "\n";
-        }
+        threads.push_back(std::thread(thread_entry, j));
     }
 
+    for(size_t tid = 0; tid < threads.size(); tid++)
+    {
+        threads[tid].join();
+    }
+
+    for(int j = image_height - 1; j >= 0; j--)
+    {
+        for(int i = 0; i < image_width; i++)
+        {
+            std::cout << image[i][j].r << " " 
+                << image[i][j].g << " " 
+                << image[i][j].b << "\n";
+        }
+    }
 }
