@@ -32,7 +32,7 @@ namespace
     const int image_height = 1080;
     const float width_to_height_ratio = (float)image_width / (float)image_height;
 
-    const int msaa_sample_count = 200;
+    const int msaa_sample_count = 1;
 
     const std::shared_ptr<hitable> world = random_scene();
 
@@ -98,8 +98,6 @@ int main()
 {
     srand48(int(time(0)));
 
-    std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
-    
     {
         // since the destructor of ThreadPool joins all thread
         // I use a simple scope to wait for all works to be done
