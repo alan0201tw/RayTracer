@@ -98,7 +98,7 @@ int main()
     std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
     
     {
-        // since the destructor of ThreadPool joins all thread
+        // since the destructor of ThreadPool joins all threads
         // I use a simple scope to wait for all works to be done
         ThreadPool pool(10000);
 
