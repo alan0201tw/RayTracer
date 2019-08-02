@@ -26,8 +26,5 @@ clean:
 	@echo "$(RM) -r $(BINDIR) $(TARGET)"; $(RM) -r $(BINDIR) $(TARGET)
 	@echo "$(RM) -r $(TESTBINDIR)"; $(RM) -r $(TESTBINDIR)
 
-exec:
-	./main > test.ppm
-
 # Declare clean as utility, not a file
 .PHONY: clean exec
