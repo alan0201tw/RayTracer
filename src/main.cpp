@@ -28,11 +28,11 @@ struct color255
 // anonymous namespace for global variables in single compilation unit
 namespace
 {
-    const int image_width = 1920;
-    const int image_height = 1080;
+    const int image_width = 800;
+    const int image_height = 600;
     const float width_to_height_ratio = (float)image_width / (float)image_height;
 
-    const int msaa_sample_count = 200;
+    const int msaa_sample_count = 100;
 
     const std::shared_ptr<hitable> world = random_scene();
 
@@ -42,7 +42,7 @@ namespace
     const float distance_to_focus = 10.0f;
     const float aperture = 0.1f;
 
-    const camera cam(lookfrom, lookat, up, 20.0f, width_to_height_ratio, aperture, distance_to_focus);
+    const camera cam(lookfrom, lookat, up, 20.0f, width_to_height_ratio, aperture, distance_to_focus, 0.0f, 1.0f);
 
     unsigned char image[3 * image_width * image_height];
 }
@@ -118,14 +118,4 @@ int main()
     {
         std::cerr << "Error when saving image\n";
     }
-
-    // for(int j = image_height - 1; j >= 0; j--)
-    // {
-    //     for(int i = 0; i < image_width; i++)
-    //     {
-    //         std::cout << image[i][j].r << " " 
-    //             << image[i][j].g << " " 
-    //             << image[i][j].b << "\n";
-    //     }
-    // }
 }

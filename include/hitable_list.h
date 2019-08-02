@@ -20,6 +20,7 @@ public:
     }
     
     virtual bool hit(const ray& _ray, float t_min, float t_max, hit_record& rec) const override;
+    virtual bool bounding_box(float t0, float t1, aabb& _box) const override;
 
     std::vector<hitable_reference> list;
     int list_size;

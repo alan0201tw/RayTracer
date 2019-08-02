@@ -8,8 +8,11 @@ class camera
 {
 public:
 
-    camera(const vec3& _lookfrom, const vec3& _lookat, const vec3& _up , float _vfov, float _aspect, float _aperture, float _focus_distance)
+    camera(const vec3& _lookfrom, const vec3& _lookat, const vec3& _up , float _vfov, float _aspect, float _aperture, float _focus_distance, float _t0, float _t1)
     {
+        open_time = _t0;
+        close_time = _t1;
+
         float theta = _vfov * M_PI / 180.0f;
         float half_height = tan(theta / 2.0f);
         float half_width = _aspect * half_height;
@@ -30,9 +33,13 @@ public:
         
     inline ray get_ray(float u, float v) const
     {
+        // add time to construct ray
         vec3 rd = lens_radius * random_in_unit_disk();
         vec3 offset = camera_right * rd.x() + camera_up * rd.y();
-        return ray(origin + offset, lower_left_corner + u * horizontal + v * vertical - origin - offset);
+
+        float time = open_time + drand48() * (close_time - open_time);
+
+        return ray(origin + offset, lower_left_corner + u * horizontal + v * vertical - origin - offset, time);
     }
 
     vec3 lower_left_corner; 
@@ -45,6 +52,8 @@ public:
     vec3 camera_up;
 
     float lens_radius;
+
+    float open_time, close_time;
 };
 
 #endif

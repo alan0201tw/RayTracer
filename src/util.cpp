@@ -62,20 +62,24 @@ float schlick(float _cosine, float _refractive_index)
     return r0 + (1 - r0) * pow((1 - _cosine), 5);
 }
 
-std::shared_ptr<hitable> random_scene() {
+std::shared_ptr<hitable> random_scene()
+{
     int n = 500;
     std::vector<std::shared_ptr<hitable>> list;
     list.reserve(n + 1);
 
     list.push_back(std::make_shared<sphere>(vec3(0,-1000,0), 1000, std::make_shared<lambertian>(vec3(0.5, 0.5, 0.5))));
 
-    for (int a = -11; a < 11; a++) {
-        for (int b = -11; b < 11; b++) {
+    for (int a = -10; a < 10; a++) {
+        for (int b = -10; b < 10; b++) {
             float choose_mat = drand48();
             vec3 center(a + 0.9 * drand48(), 0.2f, b + 0.9 * drand48()); 
             if ((center-vec3(4,0.2,0)).length() > 0.9) { 
                 if (choose_mat < 0.8) {  // diffuse
-                    list.push_back(std::make_shared<sphere>(center, 0.2, std::make_shared<lambertian>(vec3(drand48()*drand48(), drand48()*drand48(), drand48()*drand48()))));
+                    //list.push_back(std::make_shared<sphere>(center, 0.2, std::make_shared<lambertian>(vec3(drand48()*drand48(), drand48()*drand48(), drand48()*drand48()))));
+                    list.push_back(std::make_shared<moving_sphere>(center, center + vec3(0, 0.5f * drand48(), 0.0f), 
+                    0.0f, 1.0f, // start and end time
+                    0.2f, std::make_shared<lambertian>(vec3(drand48()*drand48(), drand48()*drand48(), drand48()*drand48()))));
                 }
                 else if (choose_mat < 0.95) { // metal
                     list.push_back(std::make_shared<sphere>(center, 0.2,
