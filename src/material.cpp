@@ -6,7 +6,7 @@ bool lambertian::scatter(const ray& _incoming_ray, const hit_record& _record,vec
 {
     vec3 target = _record.hit_point + _record.normal + random_in_unit_sphere();
     _scattered_ray = ray(_record.hit_point, target - _record.hit_point, _incoming_ray.get_time());
-    _attenuation = albedo;
+    _attenuation = albedo->value_at_uv(0, 0, _record.hit_point);
     
     return true;
 }

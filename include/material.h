@@ -6,6 +6,7 @@
 #include "vec3.h"
 #include "ray.h"
 #include "hitable.h"
+#include "texture.h"
 
 class material
 {
@@ -16,11 +17,12 @@ public:
 class lambertian : public material
 {
 public:
-    lambertian(const vec3& _albedo) : albedo(_albedo) {}
+    lambertian(vec3 _albedo) : albedo( std::make_shared<constant_texture>(_albedo) ) {}
+    lambertian(std::shared_ptr<texture> _albedo) : albedo(_albedo) {}
 
     virtual bool scatter(const ray& _incoming_ray,  const hit_record& _record,vec3& _attenuation, ray& _scattered_ray) const override;
 
-    vec3 albedo;
+    std::shared_ptr<texture> albedo;
 };
 
 class metal : public material

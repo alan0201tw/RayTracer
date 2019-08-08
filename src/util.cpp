@@ -5,6 +5,7 @@
 #include "sphere.h"
 #include "material.h"
 #include "hitable_list.h"
+#include "texture.h"
 
 #include "bvh.h"
 
@@ -70,24 +71,39 @@ std::shared_ptr<hitable> random_scene()
     std::vector<std::shared_ptr<hitable>> list;
     list.reserve(n + 1);
 
-    list.push_back(std::make_shared<sphere>(vec3(0,-1000,0), 1000, std::make_shared<lambertian>(vec3(0.5, 0.5, 0.5))));
+    std::shared_ptr<texture> _checker_texture = std::make_shared<checker_texture>(
+        std::make_shared<constant_texture>(vec3(0.2f, 0.3f, 0.1f)),
+        std::make_shared<constant_texture>(vec3(0.9f, 0.9f, 0.9f))
+    );
+
+    list.push_back(std::make_shared<sphere>(vec3(0,-1000,0), 1000, std::make_shared<lambertian>(_checker_texture)));
 
     for (int a = -10; a < 10; a++) {
         for (int b = -10; b < 10; b++) {
             float choose_mat = drand48();
             vec3 center(a + 0.9 * drand48(), 0.2f, b + 0.9 * drand48()); 
             if ((center-vec3(4,0.2,0)).length() > 0.9) { 
-                if (choose_mat < 0.8) {  // diffuse
+                if (choose_mat < 0.8f) 
+                {
+                    // diffuse
                     //list.push_back(std::make_shared<sphere>(center, 0.2, std::make_shared<lambertian>(vec3(drand48()*drand48(), drand48()*drand48(), drand48()*drand48()))));
-                    list.push_back(std::make_shared<moving_sphere>(center, center + vec3(0, 0.5f * drand48(), 0.0f), 
-                    0.0f, 1.0f, // start and end time
-                    0.2f, std::make_shared<lambertian>(vec3(drand48()*drand48(), drand48()*drand48(), drand48()*drand48()))));
+                    std::shared_ptr<texture> random_texture = std::make_shared<constant_texture>(
+                        vec3(drand48()*drand48(), drand48()*drand48(), drand48()*drand48()));
+
+                    list.push_back(std::make_shared<moving_sphere>(
+                        center, center + vec3(0, 0.5f * drand48(), 0.0f), 
+                        0.0f, 1.0f, // start and end time
+                        0.2f, std::make_shared<lambertian>(random_texture)));
                 }
-                else if (choose_mat < 0.95) { // metal
+                else if (choose_mat < 0.95f)
+                {
+                    // metal
                     list.push_back(std::make_shared<sphere>(center, 0.2,
                         std::make_shared<metal>(vec3(0.5*(1 + drand48()), 0.5*(1 + drand48()), 0.5*(1 + drand48())),  0.5*drand48())));
                 }
-                else {  // glass
+                else
+                {
+                    // glass
                     list.push_back(std::make_shared<sphere>(center, 0.2, std::make_shared<dielectric>(1.5)));
                 }
             }
