@@ -34,15 +34,15 @@ namespace
 
     const int msaa_sample_count = 100;
 
-    const std::shared_ptr<hitable> world = random_scene();
+    const std::shared_ptr<hitable> world = two_sphere();
 
     const vec3 lookfrom(13.0f, 2.0f, 3.0f);
-    const vec3 lookat(0.0f, 0.0f, -1.0f);
+    const vec3 lookat(0.0f, 0.0f, 0.0f);
     const vec3 up(0.0f, 1.0f, 0.0f);
     const float distance_to_focus = 10.0f;
-    const float aperture = 0.1f;
+    const float aperture = 0.0f;
 
-    const camera cam(lookfrom, lookat, up, 30.0f, width_to_height_ratio, aperture, distance_to_focus, 0.0f, 1.0f);
+    const camera cam(lookfrom, lookat, up, 20.0f, width_to_height_ratio, aperture, distance_to_focus, 0.0f, 1.0f);
 
     unsigned char image[3 * image_width * image_height];
 }

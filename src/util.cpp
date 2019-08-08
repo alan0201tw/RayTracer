@@ -134,3 +134,19 @@ std::shared_ptr<hitable> random_scene()
     // user    4m20.477s
     // sys     0m3.869s
 }
+
+std::shared_ptr<hitable> two_sphere()
+{
+    std::shared_ptr<texture> _checker_texture = std::make_shared<checker_texture>(
+        std::make_shared<constant_texture>(vec3(0.1f, 0.2f, 0.3f)),
+        std::make_shared<constant_texture>(vec3(0.9f, 0.9f, 0.9f))
+    );
+
+    std::vector<std::shared_ptr<hitable>> list;
+    list.reserve(50);
+
+    list.push_back(std::make_shared<sphere>(vec3(0.0f, -10.0f, 0.0f), 10.0f, std::make_shared<lambertian>(_checker_texture)));
+    list.push_back(std::make_shared<sphere>(vec3(0.0f,  10.0f, 0.0f), 10.0f, std::make_shared<lambertian>(_checker_texture)));
+
+    return std::make_shared<bvh_node>(list, 0.0f, 1.0f);
+}
