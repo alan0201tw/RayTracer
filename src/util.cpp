@@ -6,6 +6,8 @@
 #include "material.h"
 #include "hitable_list.h"
 
+#include "bvh.h"
+
 vec3 random_in_unit_disk()
 {
     vec3 direction(drand48(), drand48(), 0);
@@ -96,5 +98,23 @@ std::shared_ptr<hitable> random_scene()
     list.push_back(std::make_shared<sphere>(vec3(-4, 1, 0), 1.0, std::make_shared<lambertian>(vec3(0.4, 0.2, 0.1))));
     list.push_back(std::make_shared<sphere>(vec3(4, 1, 0), 1.0, std::make_shared<metal>(vec3(0.7, 0.6, 0.5), 0.0)));
 
-    return std::make_shared<hitable_list>(list, list.size());
+    //return std::make_shared<hitable_list>(list, list.size());
+
+    // change to bvh
+    return std::make_shared<bvh_node>(list, 0.0f, 1.0f);
+
+    // using O(N) search ( hitable_list )
+    // real    4m49.214s
+    // user    13m57.995s
+    // sys     0m7.843s
+    //
+    // using BVH
+    // real    1m21.986s
+    // user    4m50.992s
+    // sys     0m4.199s
+    //
+    // using BVH and functors
+    // real    1m18.025s
+    // user    4m20.477s
+    // sys     0m3.869s
 }

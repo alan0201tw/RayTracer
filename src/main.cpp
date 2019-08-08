@@ -42,7 +42,7 @@ namespace
     const float distance_to_focus = 10.0f;
     const float aperture = 0.1f;
 
-    const camera cam(lookfrom, lookat, up, 20.0f, width_to_height_ratio, aperture, distance_to_focus, 0.0f, 1.0f);
+    const camera cam(lookfrom, lookat, up, 30.0f, width_to_height_ratio, aperture, distance_to_focus, 0.0f, 1.0f);
 
     unsigned char image[3 * image_width * image_height];
 }
@@ -52,7 +52,7 @@ vec3 get_color(const ray& _ray, std::shared_ptr<hitable> _world, int depth)
     hit_record rec;
     if(_world->hit(_ray, 0.001f, MAXFLOAT, rec))
     {
-        ray scattered; 
+        ray scattered;
         vec3 attentuation;
 
         if(depth < 50 && 
