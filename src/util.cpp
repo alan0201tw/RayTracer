@@ -65,6 +65,14 @@ float schlick(float _cosine, float _refractive_index)
     return r0 + (1 - r0) * pow((1 - _cosine), 5);
 }
 
+void get_sphere_uv(const vec3& point_on_surface, float& _u, float& _v)
+{
+    float phi = std::atan2(point_on_surface.z(), point_on_surface.x());
+    float theta = std::asin(point_on_surface.y());
+    _u = 1 - (phi + M_PI) / (2.0f * M_PI);
+    _v = (theta + M_PI / 2.0f) / M_PI;
+}
+
 std::shared_ptr<hitable> random_scene()
 {
     int n = 500;
@@ -75,6 +83,7 @@ std::shared_ptr<hitable> random_scene()
         std::make_shared<constant_texture>(vec3(0.2f, 0.3f, 0.1f)),
         std::make_shared<constant_texture>(vec3(0.9f, 0.9f, 0.9f))
     );
+    std::shared_ptr<texture> _image_texture = std::make_shared<image_texture>("./resources/texture.jpg");
 
     list.push_back(std::make_shared<sphere>(vec3(0,-1000,0), 1000, std::make_shared<lambertian>(_checker_texture)));
 
@@ -111,7 +120,8 @@ std::shared_ptr<hitable> random_scene()
     }
 
     list.push_back(std::make_shared<sphere>(vec3(0, 1, 0), 1.0, std::make_shared<dielectric>(1.5)));
-    list.push_back(std::make_shared<sphere>(vec3(-4, 1, 0), 1.0, std::make_shared<lambertian>(vec3(0.4, 0.2, 0.1))));
+    //list.push_back(std::make_shared<sphere>(vec3(-4, 1, 0), 1.0, std::make_shared<lambertian>(vec3(0.4, 0.2, 0.1))));
+    list.push_back(std::make_shared<sphere>(vec3(-4, 1, 2.0f), 1.0, std::make_shared<lambertian>(_image_texture)));
     list.push_back(std::make_shared<sphere>(vec3(4, 1, 0), 1.0, std::make_shared<metal>(vec3(0.7, 0.6, 0.5), 0.0)));
 
     //return std::make_shared<hitable_list>(list, list.size());
@@ -142,10 +152,12 @@ std::shared_ptr<hitable> two_sphere()
         std::make_shared<constant_texture>(vec3(0.9f, 0.9f, 0.9f))
     );
 
+    std::shared_ptr<texture> _image_texture = std::make_shared<image_texture>("./resources/texture.jpg");
+
     std::vector<std::shared_ptr<hitable>> list;
     list.reserve(50);
 
-    list.push_back(std::make_shared<sphere>(vec3(0.0f, -10.0f, 0.0f), 10.0f, std::make_shared<lambertian>(_checker_texture)));
+    list.push_back(std::make_shared<sphere>(vec3(0.0f, -10.0f, 0.0f), 10.0f, std::make_shared<lambertian>(_image_texture)));
     list.push_back(std::make_shared<sphere>(vec3(0.0f,  10.0f, 0.0f), 10.0f, std::make_shared<lambertian>(_checker_texture)));
 
     return std::make_shared<bvh_node>(list, 0.0f, 1.0f);

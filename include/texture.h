@@ -36,5 +36,16 @@ private:
     std::shared_ptr<texture> odd_texture;
 };
 
+class image_texture : public texture
+{
+public:
+    image_texture(std::string _file_name);
+
+    virtual vec3 value_at_uv(float _u, float _v, const vec3& _hit_point) const override;
+
+private:
+    unsigned char* data;
+    int width, height, channel;
+};
 
 #endif

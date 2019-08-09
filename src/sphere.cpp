@@ -1,6 +1,7 @@
 #include "sphere.h"
 
 #include "aabb.h"
+#include "util.h"
 
 bool sphere::hit(const ray& _ray, float t_min, float t_max, hit_record& rec) const
 {
@@ -18,6 +19,9 @@ bool sphere::hit(const ray& _ray, float t_min, float t_max, hit_record& rec) con
         {
             rec.t = temp;
             rec.hit_point = _ray.point_at_parameter(rec.t);
+            // obtaining texture coordinate
+            get_sphere_uv((rec.hit_point - center) / radius, rec.u, rec.v);
+            //
             rec.normal = (rec.hit_point - center) / radius;
             rec.material_ref = sphere_mat;
             return true;
@@ -29,6 +33,9 @@ bool sphere::hit(const ray& _ray, float t_min, float t_max, hit_record& rec) con
         {
             rec.t = temp;
             rec.hit_point = _ray.point_at_parameter(rec.t);
+            // obtaining texture coordinate
+            get_sphere_uv((rec.hit_point - center) / radius, rec.u, rec.v);
+            //
             rec.normal = (rec.hit_point - center) / radius;
             rec.material_ref = sphere_mat;
             return true;
@@ -63,6 +70,9 @@ bool moving_sphere::hit(const ray& _ray, float t_min, float t_max, hit_record& r
         {
             rec.t = temp;
             rec.hit_point = _ray.point_at_parameter(rec.t);
+            // obtaining texture coordinate
+            get_sphere_uv((rec.hit_point - current_center) / radius, rec.u, rec.v);
+            //
             rec.normal = (rec.hit_point - current_center) / radius;
             rec.material_ref = moving_sphere_mat;
             return true;
@@ -74,6 +84,9 @@ bool moving_sphere::hit(const ray& _ray, float t_min, float t_max, hit_record& r
         {
             rec.t = temp;
             rec.hit_point = _ray.point_at_parameter(rec.t);
+            // obtaining texture coordinate
+            get_sphere_uv((rec.hit_point - current_center) / radius, rec.u, rec.v);
+            //
             rec.normal = (rec.hit_point - current_center) / radius;
             rec.material_ref = moving_sphere_mat;
             return true;

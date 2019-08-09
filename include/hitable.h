@@ -12,6 +12,7 @@ class aabb;
 struct hit_record
 {
     float t;
+    float u, v;
     vec3 hit_point;
     vec3 normal;
     std::shared_ptr<material> material_ref;

@@ -9,12 +9,13 @@
 #include "vec3.h"
 #include "ray.h"
 #include "hitable_list.h"
-#include "sphere.h"
 #include "camera.h"
 #include "material.h"
 
 #include "util.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
@@ -32,9 +33,9 @@ namespace
     const int image_height = 600;
     const float width_to_height_ratio = (float)image_width / (float)image_height;
 
-    const int msaa_sample_count = 100;
+    const int msaa_sample_count = 10;
 
-    const std::shared_ptr<hitable> world = two_sphere();
+    const std::shared_ptr<hitable> world = random_scene();
 
     const vec3 lookfrom(13.0f, 2.0f, 3.0f);
     const vec3 lookat(0.0f, 0.0f, 0.0f);
@@ -89,6 +90,12 @@ void thread_entry(int i, int j)
     int b01 = int(255.99 * accumulated_col[2]);
 
     //std::cout << r01 << " " << g01 << " " << b01 << "\n";
+    //  
+    //  r[j][i]
+    //  
+    //  r01 g01 b01, r02 g02 b02, r03 g03 b03 .... , r0<width> b0<width> g0<width>,
+    //  r11 g11 b11 ( = rgb[ width + 1 ] )
+    //
     image[j * 3 * image_width + i * 3 + 0] = r01;
     image[j * 3 * image_width + i * 3 + 1] = g01;
     image[j * 3 * image_width + i * 3 + 2] = b01;
@@ -99,7 +106,7 @@ int main()
     srand48(int(time(0)));
 
     {
-        // since the destructor of ThreadPool joins all thread
+        // since the destructor of ThreadPool joins all threads
         // I use a simple scope to wait for all works to be done
         ThreadPool pool(10000);
 
