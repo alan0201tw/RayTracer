@@ -18,5 +18,6 @@ void get_sphere_uv(const vec3& point_on_surface, float& _u, float& _v);
 // scene generation
 std::shared_ptr<hitable> random_scene();
 std::shared_ptr<hitable> two_sphere();
+std::shared_ptr<hitable> two_perlin_sphere();
 
 #endif

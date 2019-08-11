@@ -4,9 +4,9 @@ bool aabb::hit(const ray& _ray, float t_min, float t_max) const
 {
     for (int a = 0; a < 3; a++)
     {
-        float t0 = ffmin((min[a] - _ray.origin()[a]) / _ray.direction()[a],  
+        float t0 = ffmin((min[a] - _ray.origin()[a]) / _ray.direction()[a],
                         (max[a] - _ray.origin()[a]) / _ray.direction()[a]);
-        float t1 = ffmax((min[a] - _ray.origin()[a]) / _ray.direction()[a],  
+        float t1 = ffmax((min[a] - _ray.origin()[a]) / _ray.direction()[a],
                         (max[a] - _ray.origin()[a]) / _ray.direction()[a]);
         t_min = ffmax(t0, t_min);
         t_max = ffmin(t1, t_max);

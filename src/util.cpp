@@ -162,3 +162,16 @@ std::shared_ptr<hitable> two_sphere()
 
     return std::make_shared<bvh_node>(list, 0.0f, 1.0f);
 }
+
+std::shared_ptr<hitable> two_perlin_sphere()
+{
+    std::shared_ptr<texture> _perlin_texture = std::make_shared<perlin_noise_texture>();
+
+    std::vector<std::shared_ptr<hitable>> list;
+    list.reserve(50);
+
+    list.push_back(std::make_shared<sphere>(vec3(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<lambertian>(_perlin_texture)));
+    list.push_back(std::make_shared<sphere>(vec3(0.0f,  2.0f, 0.0f), 2.0f, std::make_shared<lambertian>(_perlin_texture)));
+
+    return std::make_shared<bvh_node>(list, 0.0f, 1.0f);
+}

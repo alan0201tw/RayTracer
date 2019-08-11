@@ -5,6 +5,8 @@
 
 #include "stb_image.h"
 
+#include "perlin.h"
+
 vec3 constant_texture::value_at_uv(float _u, float _v, const vec3& _hit_point) const
 {
     return color;
@@ -12,12 +14,22 @@ vec3 constant_texture::value_at_uv(float _u, float _v, const vec3& _hit_point) c
 
 vec3 checker_texture::value_at_uv(float _u, float _v, const vec3& _hit_point) const
 {
+    // TODO : 
+    // need a way to distinguish sampling from odd and even texture.
+    // currently using world space position to do the determination.
+    // which will cause artifacts on bending surfaces like a sphere.
+
     float sines = std::sin(10 * _hit_point.x()) * std::sin(10 * _hit_point.y()) * std::sin(10 * _hit_point.z());
     if(sines < 0.0f)
     {
         return odd_texture->value_at_uv(_u, _v, _hit_point);
     }
     return even_texture->value_at_uv(_u, _v, _hit_point);
+}
+
+vec3 perlin_noise_texture::value_at_uv(float _u, float _v, const vec3& _hit_point) const
+{
+    return vec3(1, 1, 1) * perlin::get_noise(_hit_point);
 }
 
 image_texture::image_texture(std::string _file_name)

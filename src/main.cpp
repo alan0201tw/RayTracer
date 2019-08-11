@@ -35,7 +35,7 @@ namespace
 
     const int msaa_sample_count = 10;
 
-    const std::shared_ptr<hitable> world = random_scene();
+    const std::shared_ptr<hitable> world = two_perlin_sphere();
 
     const vec3 lookfrom(13.0f, 2.0f, 3.0f);
     const vec3 lookat(0.0f, 0.0f, 0.0f);
