@@ -39,8 +39,12 @@ private:
 class perlin_noise_texture : public texture
 {
 public:
-    perlin_noise_texture() {}
+    perlin_noise_texture(float _scale) : scale(_scale) {}
+    
     virtual vec3 value_at_uv(float _u, float _v, const vec3& _hit_point) const override;
+
+private:
+    float scale;
 };
 
 class image_texture : public texture

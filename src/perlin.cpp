@@ -1,24 +1,55 @@
 #include "perlin.h"
 
+#include "util.h"
+
 float perlin::get_noise(const vec3& _p)
 {
     float u = _p.x() - std::floor(_p.x());
-    float v = _p.x() - std::floor(_p.y());
-    float w = _p.x() - std::floor(_p.z());
-    int i = int(4*_p.x()) & 255;
-    int j = int(4*_p.y()) & 255;
-    int k = int(4*_p.z()) & 255;
+    float v = _p.y() - std::floor(_p.y());
+    float w = _p.z() - std::floor(_p.z());
+    int i = std::floor(_p.x());
+    int j = std::floor(_p.y());
+    int k = std::floor(_p.z());
 
-    return random_floats[perm_x[i] ^ perm_y[j] ^ perm_z[k]];
+    vec3 data[2][2][2];
+    for(int di = 0; di < 2; di++)
+    {
+        for(int dj = 0; dj < 2; dj++)
+        {
+            for(int dk = 0; dk < 2; dk++)
+            {
+                data[di][dj][dk] = 
+                    random_vecs[perm_x[(i + di) & 255] ^ perm_y[(j + dj) & 255] ^ perm_z[(k + dk) & 255]];
+            }
+        }
+    }
+
+    return perlin_interpolate(data, u, v, w);
 }
 
-std::vector<float> perlin::perlin_generate()
+float perlin::turb(const vec3& _p, int depth)
 {
-    std::vector<float> result;
+    float accum = 0.0f;
+    vec3 temp_p = _p;
+    float weight = 1.0f;
+    for(int i = 0; i < depth; i++)
+    {
+        accum += weight * get_noise(temp_p);
+        weight *= 0.5;
+        temp_p *= 2;
+    }
+
+    return std::abs(accum);
+}
+
+std::vector<vec3> perlin::perlin_generate()
+{
+    std::vector<vec3> result;
     result.reserve(256);
     for(int i = 0; i < 256; i++)
     {
-        result.push_back(drand48());
+        // IMPORTANT : it has to be unit_vector here.
+        result.push_back(unit_vector(vec3(-1 + 2 * drand48(), -1 + 2 * drand48(), -1 + 2 * drand48())));
     }
     return result;
 }
@@ -48,7 +79,7 @@ std::vector<int> perlin::perlin_generate_perm()
     return result;
 }
 
-std::vector<float> perlin::random_floats = perlin::perlin_generate();
+std::vector<vec3> perlin::random_vecs = perlin::perlin_generate();
 std::vector<int> perlin::perm_x = perlin::perlin_generate_perm();
 std::vector<int> perlin::perm_y = perlin::perlin_generate_perm();
 std::vector<int> perlin::perm_z = perlin::perlin_generate_perm();

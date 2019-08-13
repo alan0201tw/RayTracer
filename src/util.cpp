@@ -73,6 +73,38 @@ void get_sphere_uv(const vec3& point_on_surface, float& _u, float& _v)
     _v = (theta + M_PI / 2.0f) / M_PI;
 }
 
+float perlin_interpolate(vec3 _data[2][2][2], float _u, float _v, float _w)
+{
+    // Reference :
+    // https://github.com/RayTracing/TheNextWeek/issues/6
+    //
+    // in the original implementation in the book, the dot product
+    // will return negative results, causing the produced image haing
+    // several dark bands. 
+    // Accoring to the github issue, this can be resolved by rescaling
+    // the interpolation result from [-1, 1] to [0, 1].
+
+    float uu = _u * _u * (3 - 2 * _u);
+    float vv = _v * _v * (3 - 2 * _v);
+    float ww = _w * _w * (3 - 2 * _w);
+
+    float accum = 0.0f;
+    for(int i = 0; i < 2; i++)
+    {
+        for(int j = 0; j < 2; j++)
+        {
+            for(int k = 0; k < 2; k++)
+            {
+                vec3 weight(_u - i, _v - j, _w - k);
+                accum += (i * uu + (1 - i) * (1 - uu)) *
+                         (j * vv + (1 - j) * (1 - vv)) *
+                         (k * ww + (1 - k) * (1 - ww)) * dot(_data[i][j][k], weight);
+            }
+        }
+    }
+    return 0.5f * (accum + 1.0f);
+}
+
 std::shared_ptr<hitable> random_scene()
 {
     int n = 500;
@@ -165,7 +197,7 @@ std::shared_ptr<hitable> two_sphere()
 
 std::shared_ptr<hitable> two_perlin_sphere()
 {
-    std::shared_ptr<texture> _perlin_texture = std::make_shared<perlin_noise_texture>();
+    std::shared_ptr<texture> _perlin_texture = std::make_shared<perlin_noise_texture>(4.0f);
 
     std::vector<std::shared_ptr<hitable>> list;
     list.reserve(50);
