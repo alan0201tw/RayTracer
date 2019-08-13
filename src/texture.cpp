@@ -31,7 +31,8 @@ vec3 perlin_noise_texture::value_at_uv(float _u, float _v, const vec3& _hit_poin
 {
     //return vec3(1, 1, 1) * perlin::get_noise(scale * _hit_point);
     //std::cout << perlin::turb(scale * _hit_point) << "\n";
-    return vec3(1, 1, 1) * perlin::turb(scale * _hit_point);
+    //return vec3(1, 1, 1) * perlin::turb(scale * _hit_point);
+    return vec3(1, 1, 1) * 0.5f * (1 + std::sin(scale * _hit_point.z() + 10.0f * perlin::turb(_hit_point)));
 }
 
 image_texture::image_texture(std::string _file_name)

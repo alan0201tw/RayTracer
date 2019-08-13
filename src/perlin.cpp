@@ -39,6 +39,10 @@ float perlin::turb(const vec3& _p, int depth)
         temp_p *= 2;
     }
 
+    //if(accum > 1.0f)
+    // adding this line will produce what the book demonstrated
+    accum -= 1.0f;
+
     return std::abs(accum);
 }
 
