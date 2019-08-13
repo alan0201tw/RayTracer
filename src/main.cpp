@@ -19,13 +19,6 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-struct color255
-{
-    // these members should be between 0 and 255 at all time
-    // I ignore checking here for simplicity.
-    unsigned char r,g,b;    
-};
-
 // anonymous namespace for global variables in single compilation unit
 namespace
 {
@@ -33,17 +26,18 @@ namespace
     const int image_height = 600;
     const float width_to_height_ratio = (float)image_width / (float)image_height;
 
-    const int msaa_sample_count = 10;
+    const int msaa_sample_count = 100;
 
-    const std::shared_ptr<hitable> world = random_scene();
+    const std::shared_ptr<hitable> world = simple_light();
 
     const vec3 lookfrom(13.0f, 2.0f, 3.0f);
     const vec3 lookat(0.0f, 0.0f, 0.0f);
     const vec3 up(0.0f, 1.0f, 0.0f);
     const float distance_to_focus = 10.0f;
     const float aperture = 0.0f;
+    const float fov = 40.0f;
 
-    const camera cam(lookfrom, lookat, up, 20.0f, width_to_height_ratio, aperture, distance_to_focus, 0.0f, 1.0f);
+    const camera cam(lookfrom, lookat, up, fov, width_to_height_ratio, aperture, distance_to_focus, 0.0f, 1.0f);
 
     unsigned char image[3 * image_width * image_height];
 }
@@ -54,20 +48,27 @@ vec3 get_color(const ray& _ray, std::shared_ptr<hitable> _world, int depth)
     if(_world->hit(_ray, 0.001f, MAXFLOAT, rec))
     {
         ray scattered;
-        vec3 attentuation;
+        vec3 attenuation;
+        vec3 emitted = rec.material_ref->emitted(rec.u, rec.v, rec.hit_point);
 
-        if(depth < 50 && 
-            rec.material_ref->scatter(_ray, rec, attentuation, scattered))
+        if(depth < 50 && rec.material_ref->scatter(_ray, rec, attenuation, scattered))
         {
-            return attentuation * get_color(scattered, _world, depth + 1);
+            return emitted + attenuation * get_color(scattered, _world, depth + 1);
         }
-        return vec3(0, 0, 0);
+        else
+        {
+            return emitted;
+        }
     }
-    else
+    else // here is where the "clear color", or the "background color" lays
     {
-        vec3 unit_direction = unit_vector(_ray.direction());
-        float t = 0.5f * (unit_direction.y() + 1.0f);
-        return (1.0 - t) * vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0);
+        return vec3(0.0f, 0.0f, 0.0f);
+
+        // the color here will also provide "brightness" when returning to last recursion
+
+        // vec3 unit_direction = unit_vector(_ray.direction());
+        // float t = 0.5f * (unit_direction.y() + 1.0f);
+        // return (1.0 - t) * vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0);
     }
 }
 
@@ -83,11 +84,20 @@ void thread_entry(int i, int j)
         ray r = cam.get_ray(u, v);
         accumulated_col += get_color(r, world, 0);
     }
-    accumulated_col /= msaa_sample_count;
-    accumulated_col = vec3(sqrt(accumulated_col[0]), sqrt(accumulated_col[1]), sqrt(accumulated_col[2]));
-    int r01 = int(255.99 * accumulated_col[0]);
-    int g01 = int(255.99 * accumulated_col[1]);
-    int b01 = int(255.99 * accumulated_col[2]);
+    accumulated_col /= (float)msaa_sample_count;
+
+    // accumulated_col[0] = std::clamp(accumulated_col[0], 0.0f, 1.0f);
+    // accumulated_col[1] = std::clamp(accumulated_col[1], 0.0f, 1.0f);
+    // accumulated_col[2] = std::clamp(accumulated_col[2], 0.0f, 1.0f);
+
+    accumulated_col = vec3(std::sqrt(accumulated_col[0]), std::sqrt(accumulated_col[1]), std::sqrt(accumulated_col[2]));
+    int r255 = int(255.99f * accumulated_col[0]);
+    int g255 = int(255.99f * accumulated_col[1]);
+    int b255 = int(255.99f * accumulated_col[2]);
+
+    r255 = std::clamp(r255, 0, 255);
+    g255 = std::clamp(g255, 0, 255);
+    b255 = std::clamp(b255, 0, 255);
 
     //std::cout << r01 << " " << g01 << " " << b01 << "\n";
     //  
@@ -96,14 +106,14 @@ void thread_entry(int i, int j)
     //  r01 g01 b01, r02 g02 b02, r03 g03 b03 .... , r0<width> b0<width> g0<width>,
     //  r11 g11 b11 ( = rgb[ width + 1 ] )
     //
-    image[j * 3 * image_width + i * 3 + 0] = r01;
-    image[j * 3 * image_width + i * 3 + 1] = g01;
-    image[j * 3 * image_width + i * 3 + 2] = b01;
+    image[j * 3 * image_width + i * 3 + 0] = r255;
+    image[j * 3 * image_width + i * 3 + 1] = g255;
+    image[j * 3 * image_width + i * 3 + 2] = b255;
 }
 
 int main()
 {
-    srand48(int(time(0)));
+    //srand48(int(time(nullptr)));
 
     {
         // since the destructor of ThreadPool joins all threads

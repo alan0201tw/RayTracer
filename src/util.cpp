@@ -6,12 +6,13 @@
 #include "material.h"
 #include "hitable_list.h"
 #include "texture.h"
+#include "aarect.h"
 
 #include "bvh.h"
 
 vec3 random_in_unit_disk()
 {
-    vec3 direction(drand48(), drand48(), 0);
+    vec3 direction = 2 * vec3(drand48(), drand48(), 0.0f) - vec3(1.0f, 1.0f, 1.0f);
     float mag = cbrtf(drand48());
 
     return mag * unit_vector(direction);
@@ -30,9 +31,15 @@ vec3 random_in_unit_sphere()
 
     // Reference : 
     // https://karthikkaranth.me/blog/generating-random-points-in-a-sphere/#using-normally-distributed-random-numbers
+    //
+    // Update :
+    // This will cause visual bug in lighting, reason to be found.
+    // Update :
+    // This is actually caused by the difference of drand48() and 2 * drand48() - 1.
+    // Which maps to the range of [0, 1) and [-1, 1) , respectively.
     
-    vec3 direction(drand48(), drand48(), drand48());
-    float mag = cbrtf(drand48());
+    vec3 direction = 2 * vec3(drand48(), drand48(), drand48()) - vec3(1.0f, 1.0f, 1.0f);
+    float mag = std::cbrtf(drand48());
 
     return mag * unit_vector(direction);
 }
@@ -205,5 +212,24 @@ std::shared_ptr<hitable> two_perlin_sphere()
     list.push_back(std::make_shared<sphere>(vec3(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<lambertian>(_perlin_texture)));
     list.push_back(std::make_shared<sphere>(vec3(0.0f,  2.0f, 0.0f), 2.0f, std::make_shared<lambertian>(_perlin_texture)));
 
+    return std::make_shared<bvh_node>(list, 0.0f, 1.0f);
+}
+
+std::shared_ptr<hitable> simple_light()
+{
+    std::shared_ptr<texture> _perlin_texture = std::make_shared<perlin_noise_texture>(4.0f);
+    std::shared_ptr<texture> _color_texture = std::make_shared<constant_texture>(vec3(4.0f, 4.0f, 4.0f));
+
+    std::vector<std::shared_ptr<hitable>> list;
+    list.reserve(50);
+
+    list.push_back(std::make_shared<sphere>(
+        vec3(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<lambertian>(_perlin_texture)));
+    list.push_back(std::make_shared<sphere>(vec3(0.0f,  2.0f, 0.0f), 2.0f, std::make_shared<lambertian>(_perlin_texture)));
+
+    auto light = std::make_shared<diffuse_light>(_color_texture);
+    list.push_back(std::make_shared<sphere>(vec3(0.0f, 7.0f, 0.0f), 2.0f, light));
+    list.push_back(std::make_shared<xy_rect>(3.0f, 5.0f, 1.0f, 3.0f, -2.0f, light));
+    
     return std::make_shared<bvh_node>(list, 0.0f, 1.0f);
 }

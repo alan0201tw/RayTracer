@@ -12,6 +12,8 @@ class material
 {
 public:
     virtual bool scatter(const ray& _incoming_ray,  const hit_record& _record,vec3& _attenuation, ray& _scattered_ray) const = 0;
+    // the default emit function will just emit black
+    virtual vec3 emitted(float _u, float _v, const vec3& _hit_point) const;
 };
 
 class lambertian : public material
@@ -47,6 +49,18 @@ public:
     virtual bool scatter(const ray& _incoming_ray,  const hit_record& _record,vec3& _attenuation, ray& _scattered_ray) const override;
 
     float refractive_index;
+};
+
+class diffuse_light : public material
+{
+public:
+    diffuse_light(std::shared_ptr<texture> _emit) : emit(_emit) {}
+
+    virtual bool scatter(const ray& _incoming_ray,  const hit_record& _record,vec3& _attenuation, ray& _scattered_ray) const override;
+    virtual vec3 emitted(float _u, float _v, const vec3& _hit_point) const override;
+
+private:
+    std::shared_ptr<texture> emit;
 };
 
 

@@ -22,5 +22,6 @@ float perlin_interpolate(vec3 _data[2][2][2], float _u, float _v, float _w);
 std::shared_ptr<hitable> random_scene();
 std::shared_ptr<hitable> two_sphere();
 std::shared_ptr<hitable> two_perlin_sphere();
+std::shared_ptr<hitable> simple_light();
 
 #endif

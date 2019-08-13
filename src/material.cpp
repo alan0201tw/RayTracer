@@ -2,7 +2,12 @@
 
 #include "util.h"
 
-bool lambertian::scatter(const ray& _incoming_ray, const hit_record& _record,vec3& _attenuation, ray& _scattered_ray) const
+vec3 material::emitted(float _u, float _v, const vec3& _hit_point) const
+{
+    return vec3(0.0f, 0.0f, 0.0f);
+}
+
+bool lambertian::scatter(const ray& _incoming_ray, const hit_record& _record, vec3& _attenuation, ray& _scattered_ray) const
 {
     vec3 target = _record.hit_point + _record.normal + random_in_unit_sphere();
     _scattered_ray = ray(_record.hit_point, target - _record.hit_point, _incoming_ray.get_time());
@@ -11,7 +16,7 @@ bool lambertian::scatter(const ray& _incoming_ray, const hit_record& _record,vec
     return true;
 }
 
-bool metal::scatter(const ray& _incoming_ray, const hit_record& _record,vec3& _attenuation, ray& _scattered_ray) const
+bool metal::scatter(const ray& _incoming_ray, const hit_record& _record, vec3& _attenuation, ray& _scattered_ray) const
 {
     vec3 reflected = reflect(unit_vector(_incoming_ray.direction()), _record.normal);
     _scattered_ray = ray(_record.hit_point, reflected + fuzziness * random_in_unit_sphere(), _incoming_ray.get_time());
@@ -20,7 +25,7 @@ bool metal::scatter(const ray& _incoming_ray, const hit_record& _record,vec3& _a
     return true;
 }
 
-bool dielectric::scatter(const ray& _incoming_ray, const hit_record& _record,vec3& _attenuation, ray& _scattered_ray) const
+bool dielectric::scatter(const ray& _incoming_ray, const hit_record& _record, vec3& _attenuation, ray& _scattered_ray) const
 {
     vec3 reflected = reflect(_incoming_ray.direction(), _record.normal);
     
@@ -63,4 +68,14 @@ bool dielectric::scatter(const ray& _incoming_ray, const hit_record& _record,vec
     }
     
     return true;
+}
+
+bool diffuse_light::scatter(const ray& _incoming_ray,  const hit_record& _record,vec3& _attenuation, ray& _scattered_ray) const
+{
+    return false;
+}
+
+vec3 diffuse_light::emitted(float _u, float _v, const vec3& _hit_point) const
+{
+    return emit->value_at_uv(_u, _v, _hit_point);
 }
