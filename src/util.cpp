@@ -8,6 +8,7 @@
 #include "texture.h"
 #include "aarect.h"
 #include "flip_normals.h"
+#include "box.h"
 
 #include "bvh.h"
 
@@ -257,7 +258,10 @@ std::shared_ptr<hitable> cornell_box()
     list.push_back(std::make_shared<xz_rect>(0, 555, 0, 555, 0, white_material));
     list.push_back(std::make_shared<flip_normals>(std::make_shared<xy_rect>(0, 555, 0, 555, 555, white_material)));
 
-    list.push_back(std::make_shared<sphere>(vec3(200, 250, 250), 150.0, std::make_shared<metal>(vec3(1.0, 1.0, 1.0), 0.0)));
+    //list.push_back(std::make_shared<sphere>(vec3(200, 250, 250), 150.0, std::make_shared<metal>(vec3(1.0, 1.0, 1.0), 0.0)));
+
+    list.push_back(std::make_shared<box>(vec3(130, 0, 65), vec3(295, 165, 230), white_material));
+    list.push_back(std::make_shared<box>(vec3(265, 0, 295), vec3(430, 330, 460), white_material));
 
     return std::make_shared<bvh_node>(list, 0.0f, 1.0f);
 }

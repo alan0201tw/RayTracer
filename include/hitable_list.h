@@ -13,6 +13,11 @@ public:
     typedef std::shared_ptr<hitable> hitable_reference;
 
     hitable_list() {}
+    hitable_list(const std::vector<hitable_reference>& _list)
+    {
+        list = _list;
+        list_size = _list.size();
+    }
     hitable_list(const std::vector<hitable_reference>& _list, int n)
     {
         list = _list;
