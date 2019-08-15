@@ -7,6 +7,7 @@
 #include "hitable_list.h"
 #include "texture.h"
 #include "aarect.h"
+#include "flip_normals.h"
 
 #include "bvh.h"
 
@@ -231,5 +232,30 @@ std::shared_ptr<hitable> simple_light()
     list.push_back(std::make_shared<sphere>(vec3(0.0f, 7.0f, 0.0f), 2.0f, light));
     list.push_back(std::make_shared<xy_rect>(3.0f, 5.0f, 1.0f, 3.0f, -2.0f, light));
     
+    return std::make_shared<bvh_node>(list, 0.0f, 1.0f);
+}
+
+std::shared_ptr<hitable> cornell_box()
+{
+    std::vector<std::shared_ptr<hitable>> list;
+    list.reserve(50);
+
+    std::shared_ptr<texture> red_texture = std::make_shared<constant_texture>(vec3(0.65f, 0.05f, 0.05f));
+    std::shared_ptr<texture> white_texture = std::make_shared<constant_texture>(vec3(0.73f, 0.73f, 0.73f));
+    std::shared_ptr<texture> green_texture = std::make_shared<constant_texture>(vec3(0.12f, 0.45f, 0.15f));
+    std::shared_ptr<texture> light_texture = std::make_shared<constant_texture>(vec3(15.0f, 15.0f, 15.0f));
+
+    auto red_material = std::make_shared<lambertian>(red_texture);
+    auto white_material = std::make_shared<lambertian>(white_texture);
+    auto green_material = std::make_shared<lambertian>(green_texture);
+    auto light = std::make_shared<diffuse_light>(light_texture);
+
+    list.push_back(std::make_shared<flip_normals>(std::make_shared<yz_rect>(0, 555, 0, 555, 555, green_material)));
+    list.push_back(std::make_shared<yz_rect>(0, 555, 0, 555, 0, red_material));
+    list.push_back(std::make_shared<xz_rect>(213, 343, 227, 332, 554, light));
+    list.push_back(std::make_shared<flip_normals>(std::make_shared<xz_rect>(0, 555, 0, 555, 555, white_material)));
+    list.push_back(std::make_shared<xz_rect>(0, 555, 0, 555, 0, white_material));
+    list.push_back(std::make_shared<flip_normals>(std::make_shared<xy_rect>(0, 555, 0, 555, 555, white_material)));
+
     return std::make_shared<bvh_node>(list, 0.0f, 1.0f);
 }

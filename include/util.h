@@ -23,5 +23,6 @@ std::shared_ptr<hitable> random_scene();
 std::shared_ptr<hitable> two_sphere();
 std::shared_ptr<hitable> two_perlin_sphere();
 std::shared_ptr<hitable> simple_light();
+std::shared_ptr<hitable> cornell_box();
 
 #endif
