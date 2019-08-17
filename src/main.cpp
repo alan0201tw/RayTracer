@@ -23,7 +23,7 @@
 namespace
 {
     const int image_width = 800;
-    const int image_height = 600;
+    const int image_height = 800;
     const float width_to_height_ratio = (float)image_width / (float)image_height;
 
     const int msaa_sample_count = 100;

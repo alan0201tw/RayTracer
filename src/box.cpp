@@ -10,7 +10,7 @@ box::box(const vec3& _min, const vec3& _max, std::shared_ptr<material> _material
     std::vector<std::shared_ptr<hitable>> list;
     list.reserve(6);
 
-    std::cout << min_point << " , " << max_point << std::endl;
+    //std::cout << min_point << " , " << max_point << std::endl;
 
     list.push_back(std::make_shared<xy_rect>(
             min_point.x(), max_point.x(), min_point.y(), max_point.y(), max_point.z(), _material));
