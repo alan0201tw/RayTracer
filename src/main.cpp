@@ -26,9 +26,9 @@ namespace
     const int image_height = 800;
     const float width_to_height_ratio = (float)image_width / (float)image_height;
 
-    const int msaa_sample_count = 100;
+    const int msaa_sample_count = 1000;
 
-    const std::shared_ptr<hitable> world = cornell_box();
+    const std::shared_ptr<hitable> world = next_week_final();
 
     // used for regular scene
     // const vec3 lookfrom(13.0f, 2.0f, 3.0f);
@@ -38,7 +38,7 @@ namespace
     // const float aperture = 0.0f;
     // const float fov = 40.0f;
     // used for cornell box
-    const vec3 lookfrom(278.0f, 278.0f, -800.0f);
+    const vec3 lookfrom(278.0f - 50.0f, 278.0f, -800.0f);
     const vec3 lookat(278.0f, 278.0f, 0.0f);
     const vec3 up(0.0f, 1.0f, 0.0f);
     const float distance_to_focus = 10.0f;

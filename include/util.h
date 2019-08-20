@@ -24,5 +24,7 @@ std::shared_ptr<hitable> two_sphere();
 std::shared_ptr<hitable> two_perlin_sphere();
 std::shared_ptr<hitable> simple_light();
 std::shared_ptr<hitable> cornell_box();
+std::shared_ptr<hitable> cornell_smoke();
+std::shared_ptr<hitable> next_week_final();
 
 #endif

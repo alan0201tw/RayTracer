@@ -10,6 +10,7 @@
 #include "flip_normals.h"
 #include "box.h"
 #include "transform.h"
+#include "constant_medium.h"
 
 #include "bvh.h"
 
@@ -160,10 +161,12 @@ std::shared_ptr<hitable> random_scene()
             }
         }
     }
+    std::shared_ptr<texture> _color_texture = std::make_shared<constant_texture>(vec3(4.0f, 4.0f, 4.0f));
 
-    list.push_back(std::make_shared<sphere>(vec3(0, 1, 0), 1.0, std::make_shared<dielectric>(1.5)));
+    list.push_back(std::make_shared<sphere>(vec3(-4, 1, 2.0f), 1.0, std::make_shared<dielectric>(1.5)));
     //list.push_back(std::make_shared<sphere>(vec3(-4, 1, 0), 1.0, std::make_shared<lambertian>(vec3(0.4, 0.2, 0.1))));
-    list.push_back(std::make_shared<sphere>(vec3(-4, 1, 2.0f), 1.0, std::make_shared<lambertian>(_image_texture)));
+    // list.push_back(std::make_shared<sphere>(vec3(-4, 1, 2.0f), 1.0, std::make_shared<lambertian>(_image_texture)));
+    list.push_back(std::make_shared<sphere>(vec3(0, 1, 0), 1.0, std::make_shared<diffuse_light>(_color_texture)));
     list.push_back(std::make_shared<sphere>(vec3(4, 1, 0), 1.0, std::make_shared<metal>(vec3(0.7, 0.6, 0.5), 0.0)));
 
     //return std::make_shared<hitable_list>(list, list.size());
@@ -267,6 +270,121 @@ std::shared_ptr<hitable> cornell_box()
 
     list.push_back(std::make_shared<translate>(std::make_shared<rotate_y>(std::make_shared<box>(vec3(0, 0, 0), vec3(165, 165, 165), white_material), -18.0f), vec3(130, 0, 65)));
     list.push_back(std::make_shared<translate>(std::make_shared<rotate_y>(std::make_shared<box>(vec3(0, 0, 0), vec3(165, 330, 165), white_material),  15.0f), vec3(265, 0, 295)));
+
+    return std::make_shared<bvh_node>(list, 0.0f, 1.0f);
+}
+
+std::shared_ptr<hitable> cornell_smoke()
+{
+    std::vector<std::shared_ptr<hitable>> list;
+    list.reserve(50);
+
+    std::shared_ptr<texture> red_texture = std::make_shared<constant_texture>(vec3(0.65f, 0.05f, 0.05f));
+    std::shared_ptr<texture> white_texture = std::make_shared<constant_texture>(vec3(0.73f, 0.73f, 0.73f));
+    std::shared_ptr<texture> green_texture = std::make_shared<constant_texture>(vec3(0.12f, 0.45f, 0.15f));
+    std::shared_ptr<texture> light_texture = std::make_shared<constant_texture>(vec3(15.0f, 15.0f, 15.0f));
+
+    auto red_material = std::make_shared<lambertian>(red_texture);
+    auto white_material = std::make_shared<lambertian>(white_texture);
+    auto green_material = std::make_shared<lambertian>(green_texture);
+    auto light = std::make_shared<diffuse_light>(light_texture);
+
+    list.push_back(std::make_shared<flip_normals>(std::make_shared<yz_rect>(0, 555, 0, 555, 555, green_material)));
+    list.push_back(std::make_shared<yz_rect>(0, 555, 0, 555, 0, red_material));
+    list.push_back(std::make_shared<xz_rect>(213, 343, 227, 332, 554, light));
+    list.push_back(std::make_shared<flip_normals>(std::make_shared<xz_rect>(0, 555, 0, 555, 555, white_material)));
+    list.push_back(std::make_shared<xz_rect>(0, 555, 0, 555, 0, white_material));
+    list.push_back(std::make_shared<flip_normals>(std::make_shared<xy_rect>(0, 555, 0, 555, 555, white_material)));
+
+    //list.push_back(std::make_shared<sphere>(vec3(200, 250, 250), 150.0, std::make_shared<metal>(vec3(1.0, 1.0, 1.0), 0.0)));
+
+    // not rotated
+    // list.push_back(std::make_shared<box>(vec3(130, 0, 65), vec3(295, 165, 230), white_material));
+    // list.push_back(std::make_shared<box>(vec3(265, 0, 295), vec3(430, 330, 460), white_material));
+
+    std::shared_ptr<hitable> box1 = std::make_shared<translate>(std::make_shared<rotate_y>(std::make_shared<box>(vec3(0, 0, 0), vec3(165, 165, 165), white_material), -18.0f), vec3(130, 0, 65));
+    std::shared_ptr<hitable> box2 = std::make_shared<translate>(std::make_shared<rotate_y>(std::make_shared<box>(vec3(0, 0, 0), vec3(165, 330, 165), white_material),  15.0f), vec3(265, 0, 295));
+
+    list.push_back(std::make_shared<constant_medium>(box1, 0.01f, white_texture));
+    list.push_back(std::make_shared<constant_medium>(box2, 0.01f, red_texture));
+
+    return std::make_shared<bvh_node>(list, 0.0f, 1.0f);
+}
+
+std::shared_ptr<hitable> next_week_final()
+{
+    int nb = 20;
+    std::vector<std::shared_ptr<hitable>> list;
+    std::vector<std::shared_ptr<hitable>> box_list;
+    std::vector<std::shared_ptr<hitable>> box_list2;
+
+    std::shared_ptr<texture> white_texture = std::make_shared<constant_texture>(vec3(0.73f, 0.73f, 0.73f));
+    std::shared_ptr<texture> ground_texture = std::make_shared<constant_texture>(vec3(0.48f, 0.83f, 0.53f));
+    auto white_material = std::make_shared<lambertian>(white_texture);
+    auto ground_material = std::make_shared<lambertian>(ground_texture);
+
+    list.reserve(30);
+    box_list.reserve(10000);
+    box_list2.reserve(10000);
+
+    static const float w = 100;
+    for(int i = 0; i < nb; i++)
+    {
+        for(int j = 0; j < nb; j++)
+        {
+            float x0 = -1000 + i * w;
+            float z0 = -1000 + j * w;
+            float y0 = 0;
+            float x1 = x0 + w;
+            float y1 = 100 * (drand48() + 0.01f);
+            float z1 = z0 + w;
+            box_list.push_back(std::make_shared<box>(vec3(x0, y0, z0), vec3(x1, y1, z1), ground_material));
+        }
+    }
+
+    list.push_back( std::make_shared<bvh_node>(box_list, 0.0f, 1.0f) );
+    
+    std::shared_ptr<texture> light_texture = std::make_shared<constant_texture>(vec3(7.0f, 7.0f, 7.0f));
+    auto light = std::make_shared<diffuse_light>(light_texture);
+
+    list.push_back(std::make_shared<xz_rect>(123, 423, 147, 412, 554, light));
+    vec3 center(400, 400, 200);
+    auto moving_sphere_mat = std::make_shared<lambertian>(std::make_shared<constant_texture>(vec3(0.7, 0.3, 0.1)));
+    list.push_back(std::make_shared<moving_sphere>(center, center + vec3(30, 0, 0), 0, 1, 50, moving_sphere_mat));
+    
+    list.push_back(std::make_shared<sphere>(vec3(260, 150, 45), 50, std::make_shared<dielectric>(1.5f)));
+    list.push_back(std::make_shared<sphere>(vec3(0, 150, 145), 50, std::make_shared<metal>(vec3(0.8, 0.8, 0.9), 10.0f)));
+    {
+        std::shared_ptr<hitable> boundary = std::make_shared<sphere>(vec3(360, 150, 145), 70, std::make_shared<dielectric>(1.5f));
+        auto texture1 = std::make_shared<constant_texture>(vec3(0.2, 0.4, 0.9));
+        list.push_back(boundary);
+        list.push_back(std::make_shared<constant_medium>(boundary, 0.0001f, texture1));
+    }
+    {
+        std::shared_ptr<hitable> boundary1 = std::make_shared<sphere>(vec3(0, 0, 0), 5000, std::make_shared<dielectric>(1.5f));
+        list.push_back(std::make_shared<constant_medium>(boundary1, 0.0001f, white_texture));
+    }
+
+    auto emat = std::make_shared<lambertian>(std::make_shared<image_texture>("./resources/texture.jpg"));
+    list.push_back(std::make_shared<sphere>(vec3(400, 200, 400), 100, emat));
+
+    auto perlin_texture = std::make_shared<perlin_noise_texture>(0.1f);
+    list.push_back(std::make_shared<sphere>(vec3(220, 280, 300), 80, std::make_shared<lambertian>(perlin_texture)));
+
+    int ns = 1000;
+    for(int j = 0; j < ns; j++)
+    {
+        float tmp_x = 165.0f * drand48();
+        float tmp_y = 165.0f * drand48();
+        float tmp_z = 165.0f * drand48();
+        box_list2.push_back(std::make_shared<sphere>(vec3(tmp_x, tmp_y, tmp_z), 10, white_material));
+    }
+
+    list.push_back(std::make_shared<translate>(
+        std::make_shared<rotate_y>(
+            std::make_shared<bvh_node>(box_list2, 0.0f, 1.0f), 
+            15.0f), 
+        vec3(-100, 270, 395)));
 
     return std::make_shared<bvh_node>(list, 0.0f, 1.0f);
 }
