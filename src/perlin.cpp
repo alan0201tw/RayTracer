@@ -1,6 +1,6 @@
-#include "perlin.h"
+#include "perlin.hpp"
 
-#include "util.h"
+#include "util.hpp"
 
 float perlin::get_noise(const vec3& _p)
 {

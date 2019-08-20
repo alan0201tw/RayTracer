@@ -1,8 +1,8 @@
-#include "box.h"
+#include "box.hpp"
 
-#include "flip_normals.h"
-#include "aarect.h"
-#include "aabb.h"
+#include "flip_normals.hpp"
+#include "aarect.hpp"
+#include "aabb.hpp"
 
 box::box(const vec3& _min, const vec3& _max, std::shared_ptr<material> _material)
     : min_point(_min), max_point(_max)

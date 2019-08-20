@@ -3,8 +3,8 @@
 
 #include <memory>
 
-#include "vec3.h"
-#include "hitable.h"
+#include "vec3.hpp"
+#include "hitable.hpp"
 
 vec3 random_in_unit_disk();
 vec3 random_in_unit_sphere();

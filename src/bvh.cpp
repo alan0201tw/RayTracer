@@ -1,4 +1,4 @@
-#include "bvh.h"
+#include "bvh.hpp"
 
 #include <algorithm>
 

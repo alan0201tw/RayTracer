@@ -1,6 +1,6 @@
-#include "material.h"
+#include "material.hpp"
 
-#include "util.h"
+#include "util.hpp"
 
 vec3 material::emitted(float _u, float _v, const vec3& _hit_point) const
 {

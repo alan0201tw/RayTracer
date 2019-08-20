@@ -1,9 +1,9 @@
 #ifndef TRANSFORMH
 #define TRANSFORMH
 
-#include "hitable.h"
+#include "hitable.hpp"
 
-#include "aabb.h"
+#include "aabb.hpp"
 
 class translate : public hitable
 {

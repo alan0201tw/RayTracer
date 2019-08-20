@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 
-#include "hitable.h"
+#include "hitable.hpp"
 
 class hitable_list : public hitable
 {

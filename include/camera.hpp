@@ -1,8 +1,8 @@
 #ifndef CAMERAH
 #define CAMERAH
 
-#include "ray.h"
-#include "util.h"
+#include "ray.hpp"
+#include "util.hpp"
 
 class camera
 {

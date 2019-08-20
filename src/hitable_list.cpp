@@ -1,6 +1,6 @@
-#include "hitable_list.h"
+#include "hitable_list.hpp"
 
-#include "aabb.h"
+#include "aabb.hpp"
 
 bool hitable_list::hit(const ray& _ray, float t_min, float t_max, hit_record& rec) const
 {

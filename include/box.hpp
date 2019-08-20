@@ -1,11 +1,11 @@
 #ifndef BOXH
 #define BOXH
 
-#include "hitable.h"
+#include "hitable.hpp"
 
 #include <vector>
 
-#include "hitable_list.h"
+#include "hitable_list.hpp"
 
 class box : public hitable
 {

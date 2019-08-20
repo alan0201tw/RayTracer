@@ -4,15 +4,15 @@
 #include <vector>
 
 // add parallel
-#include "ThreadPool.h"
+#include "ThreadPool.hpp"
 
-#include "vec3.h"
-#include "ray.h"
-#include "hitable_list.h"
-#include "camera.h"
-#include "material.h"
+#include "vec3.hpp"
+#include "ray.hpp"
+#include "hitable_list.hpp"
+#include "camera.hpp"
+#include "material.hpp"
 
-#include "util.h"
+#include "util.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -38,7 +38,7 @@ namespace
     // const float aperture = 0.0f;
     // const float fov = 40.0f;
     // used for cornell box
-    const vec3 lookfrom(278.0f + 100.0f, 278.0f, -800.0f);
+    const vec3 lookfrom(278.0f + 100.0f, 278.0f, -800.0f + 100.0f);
     const vec3 lookat(278.0f, 278.0f, 0.0f);
     const vec3 up(0.0f, 1.0f, 0.0f);
     const float distance_to_focus = 10.0f;

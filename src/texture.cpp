@@ -1,11 +1,11 @@
-#include "texture.h"
+#include "texture.hpp"
 
 #include <cmath>
 #include <algorithm>
 
 #include "stb_image.h"
 
-#include "perlin.h"
+#include "perlin.hpp"
 
 vec3 constant_texture::value_at_uv(float _u, float _v, const vec3& _hit_point) const
 {

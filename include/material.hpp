@@ -3,10 +3,10 @@
 
 #include <algorithm>
 
-#include "vec3.h"
-#include "ray.h"
-#include "hitable.h"
-#include "texture.h"
+#include "vec3.hpp"
+#include "ray.hpp"
+#include "hitable.hpp"
+#include "texture.hpp"
 
 class material
 {

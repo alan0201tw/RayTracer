@@ -1,7 +1,7 @@
 #ifndef FLIPNORMALSH
 #define FLIPNORMALSH
 
-#include "hitable.h"
+#include "hitable.hpp"
 
 #include <memory>
 

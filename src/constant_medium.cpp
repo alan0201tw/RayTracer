@@ -1,6 +1,6 @@
-#include "constant_medium.h"
+#include "constant_medium.hpp"
 
-#include "material.h"
+#include "material.hpp"
 
 const static float FLOAT_MAX = std::numeric_limits<float>::max();
 

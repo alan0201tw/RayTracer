@@ -1,6 +1,6 @@
-#include "transform.h"
+#include "transform.hpp"
 
-#include "aabb.h"
+#include "aabb.hpp"
 
 #define DEGREE_TO_RADIAN_COEF_F (M_PI / 180.0f)
 

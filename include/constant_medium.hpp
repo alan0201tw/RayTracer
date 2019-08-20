@@ -1,8 +1,8 @@
 #ifndef CONSTANTMEDIUMH
 #define CONSTANTMEDIUMH
 
-#include "hitable.h"
-#include "texture.h"
+#include "hitable.hpp"
+#include "texture.hpp"
 
 class constant_medium : public hitable
 {

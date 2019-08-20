@@ -1,18 +1,18 @@
-#include "util.h"
+#include "util.hpp"
 
 #include <vector>
 
-#include "sphere.h"
-#include "material.h"
-#include "hitable_list.h"
-#include "texture.h"
-#include "aarect.h"
-#include "flip_normals.h"
-#include "box.h"
-#include "transform.h"
-#include "constant_medium.h"
+#include "sphere.hpp"
+#include "material.hpp"
+#include "hitable_list.hpp"
+#include "texture.hpp"
+#include "aarect.hpp"
+#include "flip_normals.hpp"
+#include "box.hpp"
+#include "transform.hpp"
+#include "constant_medium.hpp"
 
-#include "bvh.h"
+#include "bvh.hpp"
 
 vec3 random_in_unit_disk()
 {

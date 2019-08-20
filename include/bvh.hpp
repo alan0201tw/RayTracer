@@ -1,8 +1,8 @@
 #ifndef BVHH
 #define BVHH
 
-#include "hitable.h"
-#include "aabb.h"
+#include "hitable.hpp"
+#include "aabb.hpp"
 
 #include <memory>
 #include <vector>

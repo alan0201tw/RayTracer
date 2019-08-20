@@ -1,7 +1,7 @@
-#include "sphere.h"
+#include "sphere.hpp"
 
-#include "aabb.h"
-#include "util.h"
+#include "aabb.hpp"
+#include "util.hpp"
 
 bool sphere::hit(const ray& _ray, float t_min, float t_max, hit_record& rec) const
 {

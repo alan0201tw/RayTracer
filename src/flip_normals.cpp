@@ -1,4 +1,4 @@
-#include "flip_normals.h"
+#include "flip_normals.hpp"
 
 bool flip_normals::hit(const ray& _ray, float t_min, float t_max, hit_record& rec) const
 {

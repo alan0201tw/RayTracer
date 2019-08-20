@@ -1,7 +1,7 @@
 #ifndef AARECTH
 #define AARECTH
 
-#include "hitable.h"
+#include "hitable.hpp"
 
 #include <memory>
 

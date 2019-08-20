@@ -1,6 +1,6 @@
-#include "aarect.h"
+#include "aarect.hpp"
 
-#include "aabb.h"
+#include "aabb.hpp"
 
 bool xy_rect::hit(const ray& _ray, float t_min, float t_max, hit_record& rec) const 
 {
