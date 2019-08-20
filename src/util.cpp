@@ -358,7 +358,7 @@ std::shared_ptr<hitable> next_week_final()
         std::shared_ptr<hitable> boundary = std::make_shared<sphere>(vec3(360, 150, 145), 70, std::make_shared<dielectric>(1.5f));
         auto texture1 = std::make_shared<constant_texture>(vec3(0.2, 0.4, 0.9));
         list.push_back(boundary);
-        list.push_back(std::make_shared<constant_medium>(boundary, 0.0001f, texture1));
+        list.push_back(std::make_shared<constant_medium>(boundary, 0.2f, texture1));
     }
     {
         std::shared_ptr<hitable> boundary1 = std::make_shared<sphere>(vec3(0, 0, 0), 5000, std::make_shared<dielectric>(1.5f));
