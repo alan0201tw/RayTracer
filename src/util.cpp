@@ -387,4 +387,14 @@ std::shared_ptr<hitable> next_week_final()
         vec3(-100, 270, 395)));
 
     return std::make_shared<bvh_node>(list, 0.0f, 1.0f);
+
+    // using BVH, with 1920*1080 image. 10 sample per pixel
+    // real    0m49.472s
+    // user    4m14.656s
+    // sys     0m39.828s
+
+    // without
+    // real    5m28.462s
+    // user    40m24.922s
+    // sys     0m27.766s
 }
