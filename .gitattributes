@@ -1,0 +1,5 @@
+# used for adjusting github repo programming language
+
+* linguist-vendored
+*.hpp linguist-vendored=false
+*.cpp linguist-vendored=false
