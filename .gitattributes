@@ -1,9 +1,5 @@
 # used for adjusting github repo programming language
 
 * linguist-vendored
-<<<<<<< HEAD
 *.hpp linguist-vendored=false
 *.cpp linguist-vendored=false
-=======
-*.h linguist-vendored=false
->>>>>>> f715e3fe6257c30dfa04400569c303c25efa7637
