@@ -19,6 +19,10 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+#ifndef MAXFLOAT
+#define MAXFLOAT (3.402823466e+38F)
+#endif
+
 // anonymous namespace for global variables in single compilation unit
 namespace
 {
