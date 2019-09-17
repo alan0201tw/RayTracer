@@ -11,6 +11,7 @@
 #include "box.hpp"
 #include "transform.hpp"
 #include "constant_medium.hpp"
+#include "triangle.hpp"
 
 #include "bvh.hpp"
 
@@ -397,4 +398,29 @@ std::shared_ptr<hitable> next_week_final()
     // real    5m28.462s
     // user    40m24.922s
     // sys     0m27.766s
+}
+
+std::shared_ptr<hitable> triangle_test()
+{
+    std::vector<std::shared_ptr<hitable>> list;
+    list.reserve(30);
+
+    std::shared_ptr<texture> white_texture = std::make_shared<constant_texture>(vec3(2.0f, 2.0f, 2.0f));
+    auto white_material = std::make_shared<diffuse_light>(white_texture);
+
+    int ns = 100;
+    for(int j = 0; j < ns; j++)
+    {
+        float tmp_x = 400.0f * drand48() - 100;
+        float tmp_y = 400.0f * drand48() + 270;
+        float tmp_z = 400.0f * drand48() + 395;
+        vec3 random_pos = vec3(tmp_x, tmp_y, tmp_z);
+        vec3 random_v0v1 = random_in_unit_sphere() * 35.0f;
+        vec3 random_v0v2 = random_in_unit_sphere() * 35.0f;
+
+        list.push_back(std::make_shared<triangle>(
+            random_pos, random_pos + random_v0v1, random_pos + random_v0v2, white_material));
+    }
+
+    return std::make_shared<bvh_node>(list, 0.0f, 1.0f);
 }

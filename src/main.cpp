@@ -26,13 +26,14 @@
 // anonymous namespace for global variables in single compilation unit
 namespace
 {
-    const int image_width = 1920;
-    const int image_height = 1080;
+    const int image_width = 600;
+    const int image_height = 600;
     const float width_to_height_ratio = (float)image_width / (float)image_height;
 
-    const int msaa_sample_count = 2000;
+    const int msaa_sample_count = 10;
 
-    const std::shared_ptr<hitable> world = next_week_final();
+    //const std::shared_ptr<hitable> world = next_week_final();
+    const std::shared_ptr<hitable> world = triangle_test();
 
     // used for regular scene
     // const vec3 lookfrom(13.0f, 2.0f, 3.0f);

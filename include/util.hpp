@@ -27,4 +27,7 @@ std::shared_ptr<hitable> cornell_box();
 std::shared_ptr<hitable> cornell_smoke();
 std::shared_ptr<hitable> next_week_final();
 
+
+std::shared_ptr<hitable> triangle_test();
+
 #endif
