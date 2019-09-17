@@ -477,6 +477,9 @@ std::shared_ptr<hitable> triangle_test()
         }
     }
 
+    //list.push_back(std::make_shared<xy_rect>(-500, 500, -500, 500, -50, light));
+    list.push_back(std::make_shared<sphere>(vec3(275, 50, 0), 50, light));
+
     // int ns = 100;
     // for(int j = 0; j < ns; j++)
     // {
