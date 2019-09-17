@@ -5,20 +5,24 @@
 static const float kEpsilon = 1e-8;
 
 triangle::triangle(const vec3& _v0, const vec3& _v1, const vec3& _v2, std::shared_ptr<material> _material)
-    : v0(_v0), v1(_v1), v2(_v2), triangle_mat(_material) {}
+    : v0(_v0), v1(_v1), v2(_v2), triangle_mat(_material)
+    {
+        normal = cross(v1 - v0, v2 - v0);
+    }
 
 bool triangle::hit(const ray& _ray, float t_min, float t_max, hit_record& rec) const
 {
     // Reference : 
     // https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/moller-trumbore-ray-triangle-intersection
+    // https://github.com/netolcc06/BabyRayTracer/blob/master/Triangle.hpp
     vec3 v0v1 = v1 - v0;
     vec3 v0v2 = v2 - v0;
     vec3 pvec = cross(_ray.direction(), v0v2);
     float det = dot(v0v1, pvec);
 
     // culling
-    // if(det < kEpsilon) return false;
-    if (fabs(det) < kEpsilon) return false; 
+    if(det < kEpsilon) return false;
+    //if (fabs(det) < kEpsilon) return false; 
 
     float invDet = 1.0f / det;
 
@@ -30,16 +34,13 @@ bool triangle::hit(const ray& _ray, float t_min, float t_max, hit_record& rec) c
     float v = dot(_ray.direction(), qvec) * invDet;
     if(v < 0 || u + v > 1) return false;
 
-    //float t = dot(v0v2, qvec) * invDet;
+    float t = dot(v0v2, qvec) * invDet;
+    if (t < 0) return false;
 
     // fill in collision info
-    rec.hit_point = v0 + u * v0v1 + v * v0v2;
-    rec.normal = cross(v0v1, v0v2);
-    if(dot(rec.normal, _ray.direction()) < 0.0f)
-    {
-        rec.normal *= -1.0f;
-    }
-    rec.t = ((rec.hit_point - _ray.origin()) / _ray.direction()).x();
+    rec.hit_point = _ray.point_at_parameter(t);
+    rec.normal = normal;
+    rec.t = t;
     rec.u = u;
     rec.v = v;
     rec.material_ref = triangle_mat;

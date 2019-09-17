@@ -14,6 +14,7 @@ public:
 
 private:
     vec3 v0, v1, v2;
+    vec3 normal;
     std::shared_ptr<material> triangle_mat;
 };
 

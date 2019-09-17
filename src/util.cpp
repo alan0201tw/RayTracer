@@ -15,6 +15,9 @@
 
 #include "bvh.hpp"
 
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "tiny_obj_loader.h"
+
 vec3 random_in_unit_disk()
 {
     vec3 direction = 2 * vec3(drand48(), drand48(), 0.0f) - vec3(1.0f, 1.0f, 1.0f);
@@ -403,24 +406,90 @@ std::shared_ptr<hitable> next_week_final()
 std::shared_ptr<hitable> triangle_test()
 {
     std::vector<std::shared_ptr<hitable>> list;
-    list.reserve(30);
+    list.reserve(3000);
 
-    std::shared_ptr<texture> white_texture = std::make_shared<constant_texture>(vec3(2.0f, 2.0f, 2.0f));
-    auto white_material = std::make_shared<diffuse_light>(white_texture);
+    std::shared_ptr<texture> red_texture = std::make_shared<constant_texture>(vec3(0.65f, 0.05f, 0.05f));
+    std::shared_ptr<texture> white_texture = std::make_shared<constant_texture>(vec3(0.73f, 0.73f, 0.73f));
+    std::shared_ptr<texture> green_texture = std::make_shared<constant_texture>(vec3(0.12f, 0.45f, 0.15f));
+    std::shared_ptr<texture> light_texture = std::make_shared<constant_texture>(vec3(15.0f, 15.0f, 15.0f));
 
-    int ns = 100;
-    for(int j = 0; j < ns; j++)
+    auto red_material = std::make_shared<lambertian>(red_texture);
+    auto white_material = std::make_shared<lambertian>(white_texture);
+    auto green_material = std::make_shared<lambertian>(green_texture);
+    auto light = std::make_shared<diffuse_light>(light_texture);
+
+    list.push_back(std::make_shared<flip_normals>(std::make_shared<yz_rect>(0, 555, 0, 555, 555, green_material)));
+    list.push_back(std::make_shared<yz_rect>(0, 555, 0, 555, 0, red_material));
+    list.push_back(std::make_shared<xz_rect>(213, 343, 227, 332, 554, light));
+    list.push_back(std::make_shared<flip_normals>(std::make_shared<xz_rect>(0, 555, 0, 555, 555, white_material)));
+    list.push_back(std::make_shared<xz_rect>(0, 555, 0, 555, 0, white_material));
+    list.push_back(std::make_shared<flip_normals>(std::make_shared<xy_rect>(0, 555, 0, 555, 555, white_material)));
+
+    tinyobj::attrib_t attrib;
+    std::vector<tinyobj::shape_t> shapes;
+    std::vector<tinyobj::material_t> materials;
+    std::string warn;
+    std::string err;
+
+    tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, "./resources/bunny.obj");
+    if (!warn.empty())
     {
-        float tmp_x = 400.0f * drand48() - 100;
-        float tmp_y = 400.0f * drand48() + 270;
-        float tmp_z = 400.0f * drand48() + 395;
-        vec3 random_pos = vec3(tmp_x, tmp_y, tmp_z);
-        vec3 random_v0v1 = random_in_unit_sphere() * 35.0f;
-        vec3 random_v0v2 = random_in_unit_sphere() * 35.0f;
-
-        list.push_back(std::make_shared<triangle>(
-            random_pos, random_pos + random_v0v1, random_pos + random_v0v2, white_material));
+        std::cout << warn << std::endl;
     }
+    if (!err.empty())
+    {
+        std::cerr << err << std::endl;
+    }
+
+    // Loop over shapes
+    for (size_t s = 0; s < shapes.size(); s++)
+    {
+        // Loop over faces(polygon)
+        size_t index_offset = 0;
+        for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++)
+        {
+            size_t fv = shapes[s].mesh.num_face_vertices[f];
+
+            vec3 vertices[3];
+            // Loop over vertices in the face.
+            for (size_t v = 0; v < fv; v++)
+            {
+                // access to vertex
+                tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
+                tinyobj::real_t vx = attrib.vertices[3 * idx.vertex_index+0];
+                tinyobj::real_t vy = attrib.vertices[3 * idx.vertex_index+1];
+                tinyobj::real_t vz = attrib.vertices[3 * idx.vertex_index+2];
+                // tinyobj::real_t nx = attrib.normals[3*idx.normal_index+0];
+                // tinyobj::real_t ny = attrib.normals[3*idx.normal_index+1];
+                // tinyobj::real_t nz = attrib.normals[3*idx.normal_index+2];
+                // tinyobj::real_t tx = attrib.texcoords[2*idx.texcoord_index+0];
+                // tinyobj::real_t ty = attrib.texcoords[2*idx.texcoord_index+1];
+                vertices[v] = vec3(vx, vy, vz) * 1500.0f + vec3(275, 50, 275);
+            }
+            
+            list.push_back(std::make_shared<triangle>(
+                vertices[0], vertices[1], vertices[2], white_material));
+
+            index_offset += fv;
+
+            // per-face material
+            shapes[s].mesh.material_ids[f];
+        }
+    }
+
+    // int ns = 100;
+    // for(int j = 0; j < ns; j++)
+    // {
+    //     float tmp_x = 400.0f * drand48() - 100;
+    //     float tmp_y = 400.0f * drand48() + 270;
+    //     float tmp_z = 400.0f * drand48() + 395;
+    //     vec3 random_pos = vec3(tmp_x, tmp_y, tmp_z);
+    //     vec3 random_v0v1 = random_in_unit_sphere() * 35.0f;
+    //     vec3 random_v0v2 = random_in_unit_sphere() * 35.0f;
+
+    //     list.push_back(std::make_shared<triangle>(
+    //         random_pos, random_pos + random_v0v1, random_pos + random_v0v2, white_material));
+    // }
 
     return std::make_shared<bvh_node>(list, 0.0f, 1.0f);
 }
