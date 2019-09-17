@@ -441,6 +441,7 @@ std::shared_ptr<hitable> triangle_test()
         std::cerr << err << std::endl;
     }
 
+    std::vector<std::shared_ptr<hitable>> bunny_list;
     // Loop over shapes
     for (size_t s = 0; s < shapes.size(); s++)
     {
@@ -464,10 +465,10 @@ std::shared_ptr<hitable> triangle_test()
                 // tinyobj::real_t nz = attrib.normals[3*idx.normal_index+2];
                 // tinyobj::real_t tx = attrib.texcoords[2*idx.texcoord_index+0];
                 // tinyobj::real_t ty = attrib.texcoords[2*idx.texcoord_index+1];
-                vertices[v] = vec3(vx, vy, vz) * 1500.0f + vec3(275, 50, 275);
+                vertices[v] = vec3(vx, vy, vz) * 1500.0f;
             }
             
-            list.push_back(std::make_shared<triangle>(
+            bunny_list.push_back(std::make_shared<triangle>(
                 vertices[0], vertices[1], vertices[2], white_material));
 
             index_offset += fv;
@@ -477,8 +478,16 @@ std::shared_ptr<hitable> triangle_test()
         }
     }
 
-    //list.push_back(std::make_shared<xy_rect>(-500, 500, -500, 500, -50, light));
-    list.push_back(std::make_shared<sphere>(vec3(275, 50, 0), 50, light));
+    //list.push_back(std::make_shared<bvh_node>(bunny_list, 0, 1));
+    list.push_back( std::make_shared<translate>(
+        std::make_shared<rotate_y>( 
+            std::make_shared<bvh_node>(bunny_list, 0, 1),     
+        180.0f ), vec3(275, 50, 275)
+        ));
+
+    //list.push_back(std::make_shared<xy_rect>(-500, 500, -500, 500, -1250, light));
+    list.push_back(std::make_shared<sphere>(vec3(275, 150, 0), 50, light));
+    //list.push_back(std::make_shared<sphere>(vec3(275, 50, 0), 30, light));
 
     // int ns = 100;
     // for(int j = 0; j < ns; j++)
