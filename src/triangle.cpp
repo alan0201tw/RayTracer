@@ -21,8 +21,9 @@ bool triangle::hit(const ray& _ray, float t_min, float t_max, hit_record& rec) c
     float det = dot(v0v1, pvec);
 
     // culling
-    if(det < kEpsilon) return false;
-    //if (fabs(det) < kEpsilon) return false; 
+    //if(det < kEpsilon) return false;
+    // no culling
+    if (fabs(det) < kEpsilon) return false; 
 
     float invDet = 1.0f / det;
 
@@ -39,7 +40,10 @@ bool triangle::hit(const ray& _ray, float t_min, float t_max, hit_record& rec) c
 
     // fill in collision info
     rec.hit_point = _ray.point_at_parameter(t);
-    rec.normal = normal;
+    if(dot(normal, _ray.direction()) > 0.0f)
+        rec.normal = -1.0f * normal;
+    else
+        rec.normal = normal;
     rec.t = t;
     rec.u = u;
     rec.v = v;

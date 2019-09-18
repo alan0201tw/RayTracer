@@ -488,11 +488,12 @@ std::shared_ptr<hitable> triangle_test()
     list.push_back( std::make_shared<translate>(
         std::make_shared<rotate_y>( 
             std::make_shared<bvh_node>(bunny_list, 0, 1),     
-        180.0f ), vec3(275, 50, 275)
+        180.0f ), vec3(290, 10, 278)
         ));
 
-    //list.push_back(std::make_shared<xy_rect>(-500, 500, -500, 500, -1250, light));
-    list.push_back(std::make_shared<sphere>(vec3(275, 150, 0), 50, light));
+    // list.push_back(std::make_shared<xz_rect>(213, 343, 227, 332, 554, light));
+    list.push_back(std::make_shared<xy_rect>(253, 303, 10, 60, 50, light));
+    //list.push_back(std::make_shared<sphere>(vec3(275, 150, 0), 50, light));
     //list.push_back(std::make_shared<sphere>(vec3(275, 50, 0), 30, light));
 
     // int ns = 100;
