@@ -401,6 +401,11 @@ std::shared_ptr<hitable> next_week_final()
     // real    5m28.462s
     // user    40m24.922s
     // sys     0m27.766s
+
+    // 3000 spp 1920x1080 benchmark
+    // real    274m12.543s
+    // user    1075m47.013s
+    // sys     0m36.908s
 }
 
 std::shared_ptr<hitable> triangle_test()
@@ -415,6 +420,7 @@ std::shared_ptr<hitable> triangle_test()
 
     auto red_material = std::make_shared<lambertian>(red_texture);
     auto white_material = std::make_shared<lambertian>(white_texture);
+    //auto metal_material = std::make_shared<metal>(vec3(1,1,1), 0.0f);
     auto green_material = std::make_shared<lambertian>(green_texture);
     auto light = std::make_shared<diffuse_light>(light_texture);
 
