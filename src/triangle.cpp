@@ -2,7 +2,7 @@
 
 #include "aabb.hpp"
 
-static const float kEpsilon = 1e-8;
+static const float kEpsilon = std::numeric_limits<float>::epsilon();
 
 triangle::triangle(const vec3& _v0, const vec3& _v1, const vec3& _v2, std::shared_ptr<material> _material)
     : v0(_v0), v1(_v1), v2(_v2), triangle_mat(_material)
