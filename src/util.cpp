@@ -415,12 +415,14 @@ std::shared_ptr<hitable> triangle_test()
 
     std::shared_ptr<texture> red_texture = std::make_shared<constant_texture>(vec3(0.65f, 0.05f, 0.05f));
     std::shared_ptr<texture> white_texture = std::make_shared<constant_texture>(vec3(0.73f, 0.73f, 0.73f));
+    std::shared_ptr<texture> white1_texture = std::make_shared<constant_texture>(vec3(1.0f, 1.0f, 1.0f));
     std::shared_ptr<texture> green_texture = std::make_shared<constant_texture>(vec3(0.12f, 0.45f, 0.15f));
     std::shared_ptr<texture> light_texture = std::make_shared<constant_texture>(vec3(15.0f, 15.0f, 15.0f));
 
     auto red_material = std::make_shared<lambertian>(red_texture);
     auto white_material = std::make_shared<lambertian>(white_texture);
     //auto metal_material = std::make_shared<metal>(vec3(1,1,1), 0.0f);
+    auto white1_material = std::make_shared<lambertian>(white1_texture);
     auto green_material = std::make_shared<lambertian>(green_texture);
     auto light = std::make_shared<diffuse_light>(light_texture);
 
@@ -475,7 +477,7 @@ std::shared_ptr<hitable> triangle_test()
             }
             
             bunny_list.push_back(std::make_shared<triangle>(
-                vertices[0], vertices[1], vertices[2], white_material));
+                vertices[0], vertices[1], vertices[2], white1_material));
 
             index_offset += fv;
 
@@ -488,7 +490,7 @@ std::shared_ptr<hitable> triangle_test()
     list.push_back( std::make_shared<translate>(
         std::make_shared<rotate_y>( 
             std::make_shared<bvh_node>(bunny_list, 0, 1),     
-        180.0f ), vec3(290, 10, 278)
+        180.0f ), vec3(235, 10, 278)
         ));
 
     // list.push_back(std::make_shared<xz_rect>(213, 343, 227, 332, 554, light));
