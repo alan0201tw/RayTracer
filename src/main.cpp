@@ -30,7 +30,7 @@ namespace
     const int image_height = 800;
     const float width_to_height_ratio = (float)image_width / (float)image_height;
 
-    const int msaa_sample_count = 300;
+    const int msaa_sample_count = 3000;
 
     // const std::shared_ptr<hitable> world = next_week_final();
     const std::shared_ptr<hitable> world = triangle_test();
