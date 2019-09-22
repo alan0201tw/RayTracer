@@ -439,7 +439,7 @@ std::shared_ptr<hitable> triangle_test()
     std::string warn;
     std::string err;
 
-    tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, "./resources/bunny.obj");
+    tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, "./resources/bunny_full.obj");
     if (!warn.empty())
     {
         std::cout << warn << std::endl;
@@ -473,7 +473,7 @@ std::shared_ptr<hitable> triangle_test()
                 // tinyobj::real_t nz = attrib.normals[3*idx.normal_index+2];
                 // tinyobj::real_t tx = attrib.texcoords[2*idx.texcoord_index+0];
                 // tinyobj::real_t ty = attrib.texcoords[2*idx.texcoord_index+1];
-                vertices[v] = vec3(vx, vy, vz) * 1500.0f;
+                vertices[v] = vec3(vx, vy, vz) * 150.0f;
             }
             
             bunny_list.push_back(std::make_shared<triangle>(
