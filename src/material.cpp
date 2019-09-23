@@ -9,7 +9,10 @@ vec3 material::emitted(float _u, float _v, const vec3& _hit_point) const
 
 bool lambertian::scatter(const ray& _incoming_ray, const hit_record& _record, vec3& _attenuation, ray& _scattered_ray) const
 {
-    vec3 target = _record.hit_point + _record.normal + random_in_unit_sphere();
+    // Reference github issue :
+    // https://github.com/RayTracing/raytracing.github.io/issues/145
+    // here we use a normalized random_in_unit_sphere() instead.
+    vec3 target = _record.hit_point + _record.normal + unit_vector(random_in_unit_sphere());
     _scattered_ray = ray(_record.hit_point, target - _record.hit_point, _incoming_ray.get_time());
     _attenuation = albedo->value_at_uv(_record.u, _record.v, _record.hit_point);
     
