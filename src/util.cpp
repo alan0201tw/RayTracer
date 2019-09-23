@@ -52,6 +52,15 @@ vec3 random_in_unit_sphere()
     return mag * unit_vector(direction);
 }
 
+vec3 random_on_unit_sphere()
+{
+    vec3 direction = 2 * vec3(drand48(), drand48(), drand48()) - vec3(1.0f, 1.0f, 1.0f);
+
+    return unit_vector(direction);
+}
+
+///////////////////////////
+
 vec3 reflect(const vec3& _ray_direction, const vec3& _surface_normal)
 {
     // this is because dot(_ray, _surface_normal) is actually negative
@@ -494,7 +503,7 @@ std::shared_ptr<hitable> triangle_test()
         ));
 
     // list.push_back(std::make_shared<xz_rect>(213, 343, 227, 332, 554, light));
-    list.push_back(std::make_shared<xy_rect>(253, 303, 10, 60, 50, light));
+    //list.push_back(std::make_shared<xy_rect>(253, 303, 10, 60, 50, light));
     //list.push_back(std::make_shared<sphere>(vec3(275, 150, 0), 50, light));
     //list.push_back(std::make_shared<sphere>(vec3(275, 50, 0), 30, light));
 

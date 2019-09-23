@@ -10,6 +10,7 @@
 
 * Triangle Mesh (Bunny)
     * (800x800, 300 spp, 1.0f lambertian with random_in_sphere)
-![output result](/output_images/rabbit.png)
+![output result](/output_images/rabbit_random_in_sphere.png)
     * (800x800, 300 spp, 1.0f lambertian with random_on_sphere)
-![output result](/output_images/rabbit2.png)
+![output result](/output_images/rabbit_random_on_sphere.png)
+![output result](/output_images/rabbit_random_on_sphere2.png)
