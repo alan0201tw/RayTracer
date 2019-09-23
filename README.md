@@ -14,3 +14,5 @@
     * (800x800, 300 spp, 1.0f lambertian with random_on_sphere)
 ![output result](/output_images/rabbit_random_on_sphere.png)
 ![output result](/output_images/rabbit_random_on_sphere2.png)
+    * (800x800, 300 spp, albedo : white, fuzziness : 0.0f metal with random_on_sphere)
+![output result](/output_images/rabbit_random_on_sphere_metal.png)

@@ -431,7 +431,8 @@ std::shared_ptr<hitable> triangle_test()
     auto red_material = std::make_shared<lambertian>(red_texture);
     auto white_material = std::make_shared<lambertian>(white_texture);
     //auto metal_material = std::make_shared<metal>(vec3(1,1,1), 0.0f);
-    auto white1_material = std::make_shared<lambertian>(white1_texture);
+    // auto bunny_material = std::make_shared<lambertian>(white1_texture);
+    auto bunny_material = std::make_shared<metal>(vec3(1,1,1), 0.0f);
     auto green_material = std::make_shared<lambertian>(green_texture);
     auto light = std::make_shared<diffuse_light>(light_texture);
 
@@ -486,7 +487,7 @@ std::shared_ptr<hitable> triangle_test()
             }
             
             bunny_list.push_back(std::make_shared<triangle>(
-                vertices[0], vertices[1], vertices[2], white1_material));
+                vertices[0], vertices[1], vertices[2], bunny_material));
 
             index_offset += fv;
 
