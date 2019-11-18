@@ -135,7 +135,7 @@ int main()
     {
         // since the destructor of ThreadPool joins all threads
         // I use a simple scope to wait for all works to be done
-        ThreadPool pool(10000);
+        ThreadPool pool(8);
 
         // Into the screen is negative z axis
         for(int j = image_height - 1; j >= 0; j--)
