@@ -4,7 +4,7 @@
 
 ## Results
 
-* Scene from "Rat Tracing : The Next Week"
+* Scene from "Ray Tracing : The Next Week"
     * (1920x1080, 3000spp with random_in_sphere lambertian)
 ![output result](/output_images/final_1920_3000spp.png)
 
